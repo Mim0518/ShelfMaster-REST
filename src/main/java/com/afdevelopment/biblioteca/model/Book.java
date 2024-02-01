@@ -1,24 +1,30 @@
 package com.afdevelopment.biblioteca.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Book {
 
-    private Integer ID;
+    @Id
+    @GeneratedValue
+    private Integer id;
     private String isbn;
     private String title;
     private String author;
     private Integer pages;
     private Integer edition;
+    @ManyToOne
     private Shelf shelf;
     private boolean lent;
     private String languageCode;
     private String publisher;
 
-    public Integer getID() {
-        return ID;
+    public Integer getId() {
+        return id;
     }
 
-    public void setID(Integer ID) {
-        this.ID = ID;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getIsbn() {

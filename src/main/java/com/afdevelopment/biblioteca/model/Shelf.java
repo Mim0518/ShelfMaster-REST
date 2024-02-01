@@ -1,21 +1,25 @@
 package com.afdevelopment.biblioteca.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Shelf {
-    private Integer ID;
+    @jakarta.persistence.Id
+    @GeneratedValue
+    private Integer Id;
     private String location;
 
-    public Integer getID() {
-        return ID;
+    public Integer getId() {
+        return Id;
     }
-
-    public void setID(Integer ID) {
-        this.ID = ID;
+    public void setId(Integer ID) {
+        this.Id = ID;
     }
-
     public String getLocation() {
         return location;
     }
-
     public void setLocation(String location) {
         this.location = location;
     }
@@ -23,7 +27,7 @@ public class Shelf {
     @Override
     public String toString() {
         return "Shelf{" +
-                "ID=" + ID +
+                "ID=" + Id +
                 ", location='" + location + '\'' +
                 '}';
     }

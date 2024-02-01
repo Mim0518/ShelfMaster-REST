@@ -1,20 +1,26 @@
 package com.afdevelopment.biblioteca.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class User {
-    private Integer ID;
+    @jakarta.persistence.Id
+    private Integer Id;
     private String curp;
     private String nombre;
     private String apellidoMaterno;
     private String apellidoPaterno;
     private String numeroTelefono;
 
-    public Integer getID() {
-        return ID;
+    public Integer getId() {
+        return Id;
     }
 
-    public void setID(Integer ID) {
-        this.ID = ID;
+    public void setId(Integer id) {
+        Id = id;
     }
+
     public String getCurp() {
         return curp;
     }
@@ -57,8 +63,9 @@ public class User {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "curp='" + curp + '\'' +
+        return "User{" +
+                "Id=" + Id +
+                ", curp='" + curp + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", apellidoMaterno='" + apellidoMaterno + '\'' +
                 ", apellidoPaterno='" + apellidoPaterno + '\'' +
