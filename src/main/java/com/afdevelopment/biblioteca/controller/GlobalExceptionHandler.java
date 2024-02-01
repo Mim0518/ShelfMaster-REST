@@ -21,7 +21,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     private static final String DETAIL_FAIL = "detailFail";
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleBookNotFoundException(BookNotFoundException e){
         Map<String,Object> jsonResponse = new HashMap<>();
