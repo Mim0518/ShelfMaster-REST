@@ -3,20 +3,11 @@ package com.afdevelopment.biblioteca.response;
 import java.io.Serializable;
 
 public class Error implements Serializable {
-    private String description;
     private String code;
     private String bussinessMeaning;
 
     public Error() {
         this.code = "-1";
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getCode() {

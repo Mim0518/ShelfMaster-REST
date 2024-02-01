@@ -19,17 +19,15 @@ public class BookService {
 
 
     public Book findById(Integer id){
-        logger.info("Buscando libro con id: ".concat(id.toString()));
-        Book foundBook = null;
-        try {
-            foundBook = bookRepository.findBookById(id);
-            logger.info("Se encontró el libro ".concat(foundBook.getTitle()));
-
-        } catch (NullPointerException e){
+        logger.info("Buscando libro con Id: ".concat(id.toString()));
+        Book foundBook = bookRepository.findBookById(id);
+        if (foundBook == null){
             logger.error("Libro no encontrado");
             logger.error("To va tal bien papi");
-            throw new BookNotFoundException("To va tal bien", e);
+            throw new BookNotFoundException("No se encontró el libro con Id ".concat(id.toString()));
         }
+        logger.info("Se encontró el libro ".concat(foundBook.getTitle())
+                .concat(" del autor ").concat(foundBook.getAuthor()));
         return foundBook;
     }
 }
