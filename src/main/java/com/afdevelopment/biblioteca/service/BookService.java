@@ -1,5 +1,6 @@
 package com.afdevelopment.biblioteca.service;
 
+import com.afdevelopment.biblioteca.exception.BookAlreadyExists;
 import com.afdevelopment.biblioteca.exception.BookNotFoundException;
 import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.repository.BookRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,5 +42,16 @@ public class BookService {
         }
         logger.info("Se encontraron ".concat(String.valueOf(books.size())).concat(" escritos por ").concat(author));
         return books;
+    }
+
+    public Book saveBook(Book book){
+        logger.info("Guardando el libro ".concat(book.getTitle()).concat(" de ").concat(book.getAuthor()));
+        Book responseBook = null;
+        try{
+            responseBook = bookRepository.save(book);
+        } catch (Exception e) {
+            throw new BookAlreadyExists("El libro con ISBN ".concat(book.getIsbn()).concat(" ya está registrado"));
+        }
+        return responseBook;
     }
 }

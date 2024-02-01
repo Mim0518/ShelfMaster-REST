@@ -31,7 +31,7 @@ public class BookController {
 
     @GetMapping("/id/{bookId}")
     public ResponseEntity<Map<String, Object>> bookById(@PathVariable Integer bookId){
-        logger.info("Inicia controlador para búsqueda de libros por id");
+        logger.info("Inicia controlador de búsqueda de libros por id");
         Book book = bookService.findById(bookId);
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
@@ -39,13 +39,13 @@ public class BookController {
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(BOOKDETAIL, book);
-        logger.info("Finaliza controlador para búsqueda de libros por id");
+        logger.info("Finaliza controlador de búsqueda de libros por id");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 
     @PostMapping("/author")
     public ResponseEntity<Map<String, Object>> booksByAuthor(@RequestBody GetBook getBook){
-        logger.info("Inicia controlador para búsqueda de libros por autor");
+        logger.info("Inicia controlador de búsqueda de libros por autor");
         List<Book> books = bookService.findAllByAuthor(getBook.getAuthor());
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
@@ -53,7 +53,20 @@ public class BookController {
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(BOOKDETAIL, books);
-        logger.info("Finaliza controlador para búsqueda de libros por autor");
+        logger.info("Finaliza controlador de búsqueda de libros por autor");
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK);
+    }
+    @PostMapping("/new")
+    public ResponseEntity<Map<String, Object>> saveBook(@RequestBody Book book){
+        logger.info("Inicia controlador de guardado de libros");
+        Book bookResponse = bookService.saveBook(book);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(BOOKDETAIL, bookResponse);
+        logger.info("Finaliza controlador de guardado de libros");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }

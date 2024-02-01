@@ -10,5 +10,5 @@ import java.util.List;
 public interface BookRepository extends CrudRepository<Book, Integer> {
     Book findBookById(Integer id);
     List<Book> findAllByAuthor(String author);
-
+    Book save(Book book);
 }

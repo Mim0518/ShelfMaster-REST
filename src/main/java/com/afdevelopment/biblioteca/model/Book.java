@@ -6,15 +6,15 @@ import jakarta.persistence.*;
 public class Book {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(unique=true)
     private String isbn;
     private String title;
     private String author;
     private Integer pages;
     private Integer edition;
-    @ManyToOne
-    private Shelf shelf;
+    private Integer shelfId;
     private boolean lent;
     private String languageCode;
     private String publisher;
@@ -67,14 +67,13 @@ public class Book {
         this.edition = edition;
     }
 
-    public Shelf getShelf() {
-        return shelf;
+    public Integer getShelfId() {
+        return shelfId;
     }
 
-    public void setShelf(Shelf shelf) {
-        this.shelf = shelf;
+    public void setShelfId(Integer shelfId) {
+        this.shelfId = shelfId;
     }
-
     public boolean isLent() {
         return lent;
     }
@@ -102,13 +101,16 @@ public class Book {
     @Override
     public String toString() {
         return "Book{" +
-                "isbn='" + isbn + '\'' +
+                "id=" + id +
+                ", isbn='" + isbn + '\'' +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", pages=" + pages +
                 ", edition=" + edition +
-                ", shelf=" + shelf +
+                ", shelfId=" + shelfId +
                 ", lent=" + lent +
+                ", languageCode='" + languageCode + '\'' +
+                ", publisher='" + publisher + '\'' +
                 '}';
     }
 }
