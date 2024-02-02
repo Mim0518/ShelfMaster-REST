@@ -59,18 +59,39 @@ public class BookService {
         try{
             responseBook = bookRepository.save(book);
         } catch (Exception e) {
-            throw new BookAlreadyExistsException("El libro con ISBN ".concat(book.getIsbn()).concat(" ya está registrado"));
+            throw new BookAlreadyExistsException("El libro con ISBN ".concat(book.getIsbn())
+                    .concat(" ya está registrado"));
         }
         return responseBook;
     }
     @Transactional
     public String deleteBookByISBN(String isbn){
         logger.info("Eliminando el libro con ISBN ".concat(isbn));
-        try {
+        Book isInDB = bookRepository.findBookByIsbn(isbn);
+        if(isInDB == null){
+            logger.info("Algo ocurrió, el libro con ISBN ".concat(isbn)
+                    .concat(" no pudo ser eliminado"));
+            throw new BookNotFoundException("Algo ocurrió, el libro con ISBN ".concat(isbn)
+                    .concat(" no pudo ser eliminado"));
+        }else{
             bookRepository.deleteBookByIsbn(isbn);
             return "Libro eliminado";
-        }catch (Exception e){
-            throw new BookNotFoundException("Algo ocurrió, el libro con ISBN ".concat(isbn).concat(" no pudo ser eliminado"));
+        }
+    }
+
+    @Transactional
+    public String deleteBookById(Integer Id){
+        logger.info("Eliminando el libro con ID ".concat(Id.toString()));
+        Book isInDB = bookRepository.findBookById(Id);
+        if(isInDB == null){
+            String message = "Algo ocurrió, el libro con ID ".concat(Id.toString())
+                    .concat(" no está en la base de datos y no puede ser eliminado");
+            logger.info(message);
+            throw new BookNotFoundException(message);
+        }else{
+            bookRepository.deleteBookById(Id);
+            logger.info("Libro eliminado");
+            return "Libro eliminado";
         }
     }
 }
