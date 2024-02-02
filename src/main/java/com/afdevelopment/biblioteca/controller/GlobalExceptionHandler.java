@@ -1,6 +1,6 @@
 package com.afdevelopment.biblioteca.controller;
 
-import com.afdevelopment.biblioteca.exception.BookAlreadyExists;
+import com.afdevelopment.biblioteca.exception.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.BookNotFoundException;
 import com.afdevelopment.biblioteca.response.DetailFail;
 import com.afdevelopment.biblioteca.response.Error;
@@ -38,18 +38,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(BookAlreadyExists.class)
-    public ResponseEntity<Map<String, Object>> handleBookAlreadyExistsException(BookAlreadyExists e){
+    @ExceptionHandler(BookAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleBookAlreadyExistsException(BookAlreadyExistsException e){
         Map<String,Object> jsonResponse = new HashMap<>();
         DetailFail failResponse = new DetailFail();
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
-        error.setCode(BookAlreadyExists.getCode());
+        error.setCode(BookAlreadyExistsException.getCode());
         ArrayList errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
-        logger.info(BookAlreadyExists.getCode().concat(" --> ").concat(e.getMessage()));
+        logger.info(BookAlreadyExistsException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
     }
 }

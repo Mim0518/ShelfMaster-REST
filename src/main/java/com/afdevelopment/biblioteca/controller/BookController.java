@@ -24,7 +24,6 @@ public class BookController {
     private final String BOOKDETAIL = "bookDetail";
     private final BookService bookService;
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
-
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
@@ -55,7 +54,6 @@ public class BookController {
         logger.info("Finaliza controlador de búsqueda de libros por ISBN");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
-
     @PostMapping("/author")
     public ResponseEntity<Map<String, Object>> booksByAuthor(@RequestBody GetBook getBook){
         logger.info("Inicia controlador de búsqueda de libros por autor");
@@ -80,6 +78,19 @@ public class BookController {
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(BOOKDETAIL, bookResponse);
         logger.info("Finaliza controlador de guardado de libros");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+    @PostMapping("/delete/isbn")
+    public ResponseEntity<Map<String, Object>> deleteBook(@RequestBody GetBook getBook){
+        logger.info("Inicia controlador de eliminación de libros");
+        String bookResponse = bookService.deleteBookByISBN(getBook.getIsbn());
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(BOOKDETAIL, bookResponse);
+        logger.info("Finaliza controlador de eliminación de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }

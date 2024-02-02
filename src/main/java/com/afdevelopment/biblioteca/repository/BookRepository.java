@@ -12,4 +12,5 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
     Book findBookByIsbn(String ISBN);
     List<Book> findAllByAuthor(String author);
     Book save(Book book);
+    void deleteBookByIsbn(String Isbn);
 }

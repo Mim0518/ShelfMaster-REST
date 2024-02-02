@@ -1,8 +1,8 @@
 package com.afdevelopment.biblioteca.exception;
 
-public class BookAlreadyExists extends RuntimeException{
+public class BookAlreadyExistsException extends RuntimeException{
     private final static String code = "EX-002";
-    public BookAlreadyExists(String message){
+    public BookAlreadyExistsException(String message){
         super(message);
     }
     public static String getCode(){

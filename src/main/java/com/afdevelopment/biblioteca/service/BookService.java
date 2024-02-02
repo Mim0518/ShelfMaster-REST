@@ -1,17 +1,16 @@
 package com.afdevelopment.biblioteca.service;
 
-import com.afdevelopment.biblioteca.exception.BookAlreadyExists;
+import com.afdevelopment.biblioteca.exception.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.BookNotFoundException;
 import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class BookService {
@@ -60,8 +59,18 @@ public class BookService {
         try{
             responseBook = bookRepository.save(book);
         } catch (Exception e) {
-            throw new BookAlreadyExists("El libro con ISBN ".concat(book.getIsbn()).concat(" ya está registrado"));
+            throw new BookAlreadyExistsException("El libro con ISBN ".concat(book.getIsbn()).concat(" ya está registrado"));
         }
         return responseBook;
+    }
+    @Transactional
+    public String deleteBookByISBN(String isbn){
+        logger.info("Eliminando el libro con ISBN ".concat(isbn));
+        try {
+            bookRepository.deleteBookByIsbn(isbn);
+            return "Libro eliminado";
+        }catch (Exception e){
+            throw new BookNotFoundException("Algo ocurrió, el libro con ISBN ".concat(isbn).concat(" no pudo ser eliminado"));
+        }
     }
 }
