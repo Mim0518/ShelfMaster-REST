@@ -1,5 +1,6 @@
 package com.afdevelopment.biblioteca.controller;
 
+import com.afdevelopment.biblioteca.dto.BookDto;
 import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.request.GetBook;
 import com.afdevelopment.biblioteca.response.DetailResponse;
@@ -106,4 +107,18 @@ public class BookController {
         logger.info("Finaliza controlador de eliminación de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
+    @PatchMapping("/update")
+    public ResponseEntity<Map<String, Object>> patchBook(@RequestBody BookDto bookDto){
+        logger.info("Inicia controlador de actualización de libros");
+        Book bookResponse = bookService.patchBook(bookDto);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(BOOKDETAIL, bookResponse);
+        logger.info("Finaliza controlador de actualización de libros");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+
 }

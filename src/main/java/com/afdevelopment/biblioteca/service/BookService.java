@@ -1,8 +1,11 @@
 package com.afdevelopment.biblioteca.service;
 
+import com.afdevelopment.biblioteca.dto.BookDto;
 import com.afdevelopment.biblioteca.exception.BookAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.BookNotFoundException;
 import com.afdevelopment.biblioteca.model.Book;
+import com.afdevelopment.biblioteca.repository.BookMapper;
 import com.afdevelopment.biblioteca.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
@@ -11,14 +14,18 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
-    @Autowired
-    BookRepository bookRepository;
-
+    final BookRepository bookRepository;
+    final BookMapper bookMapper;
+    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+        this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
+    }
     public Book findById(Integer id){
         logger.info("Buscando libro con Id: ".concat(id.toString()));
         Book foundBook = bookRepository.findBookById(id);
@@ -43,8 +50,7 @@ public class BookService {
     }
     public List<Book> findAllByAuthor(String author){
         logger.info("Buscando libros escritos por ".concat(author));
-        List<Book> books = null;
-        books = bookRepository.findAllByAuthor(author);
+        List<Book> books = bookRepository.findAllByAuthor(author);
         if(books.isEmpty()){
             logger.error("No se encontraron libros escritos por ".concat(author));
             throw new BookNotFoundException("No se encontraron libros escritos por ".concat(author));
@@ -52,10 +58,9 @@ public class BookService {
         logger.info("Se encontraron ".concat(String.valueOf(books.size())).concat(" escritos por ").concat(author));
         return books;
     }
-
     public Book saveBook(Book book){
         logger.info("Guardando el libro ".concat(book.getTitle()).concat(" de ").concat(book.getAuthor()));
-        Book responseBook = null;
+        Book responseBook;
         try{
             responseBook = bookRepository.save(book);
         } catch (Exception e) {
@@ -78,7 +83,6 @@ public class BookService {
             return "Libro eliminado";
         }
     }
-
     @Transactional
     public String deleteBookById(Integer Id){
         logger.info("Eliminando el libro con ID ".concat(Id.toString()));
@@ -94,4 +98,18 @@ public class BookService {
             return "Libro eliminado";
         }
     }
+    public Book patchBook(BookDto bookDto){
+        Book toPatch;
+        if (bookDto.getId() != null) {
+            toPatch =  bookRepository.findBookById(bookDto.getId());
+        } else if (bookDto.getIsbn() != null) {
+            toPatch =  bookRepository.findBookByIsbn(bookDto.getIsbn());
+        } else {
+            throw new BookKeysNotInRequestException("Ambos, ID e ISBN, no pueden ser nulos");
+        }
+        bookMapper.updateBookFromDto(bookDto, toPatch);
+        bookRepository.save(toPatch);
+        return toPatch;
+    }
+
 }
