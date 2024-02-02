@@ -42,6 +42,19 @@ public class BookController {
         logger.info("Finaliza controlador de búsqueda de libros por id");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
+    @GetMapping("/isbn/{bookISBN}")
+    public ResponseEntity<Map<String, Object>> bookByISBN(@PathVariable String bookISBN){
+        logger.info("Inicia controlador de búsqueda de libros por ISBN");
+        Book book = bookService.findByISBN(bookISBN);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(BOOKDETAIL, book);
+        logger.info("Finaliza controlador de búsqueda de libros por ISBN");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
 
     @PostMapping("/author")
     public ResponseEntity<Map<String, Object>> booksByAuthor(@RequestBody GetBook getBook){

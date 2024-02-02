@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface BookRepository extends CrudRepository<Book, Integer> {
     Book findBookById(Integer id);
+    Book findBookByIsbn(String ISBN);
     List<Book> findAllByAuthor(String author);
     Book save(Book book);
 }

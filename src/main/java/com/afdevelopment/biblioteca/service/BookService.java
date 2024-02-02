@@ -31,7 +31,17 @@ public class BookService {
                 .concat(" del autor ").concat(foundBook.getAuthor()));
         return foundBook;
     }
-
+    public Book findByISBN(String isbn){
+        logger.info("Buscando libro con ISBN: ".concat(isbn));
+        Book foundBook = bookRepository.findBookByIsbn(isbn);
+        if (foundBook == null){
+            logger.error("Libro no encontrado");
+            throw new BookNotFoundException("No se encontró el libro con ISBN ".concat(isbn));
+        }
+        logger.info("Se encontró el libro ".concat(foundBook.getTitle())
+                .concat(" del autor ").concat(foundBook.getAuthor()));
+        return foundBook;
+    }
     public List<Book> findAllByAuthor(String author){
         logger.info("Buscando libros escritos por ".concat(author));
         List<Book> books = null;
