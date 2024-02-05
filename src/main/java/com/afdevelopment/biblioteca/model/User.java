@@ -12,8 +12,8 @@ public class User {
     private Integer Id;
     private String curp;
     private String nombre;
-    private String apellidoMaterno;
     private String apellidoPaterno;
+    private String apellidoMaterno;
     private String numeroTelefono;
 
     public Integer getId() {

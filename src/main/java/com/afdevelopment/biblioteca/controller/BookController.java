@@ -22,7 +22,7 @@ public class BookController {
     private final String OPCORRECTA = "Operación correcta";
     private final String DETAIL = "detailResponse";
     private final String SUCCESSCODE = "SUC-01";
-    private final String BOOKDETAIL = "bookDetail";
+    private final String RESPONSEDETAIL = "bookDetail";
     private final BookService bookService;
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
     public BookController(BookService bookService) {
@@ -38,7 +38,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, book);
+        jsonResponse.put(RESPONSEDETAIL, book);
         logger.info("Finaliza controlador de búsqueda de libros por id");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
@@ -51,7 +51,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, book);
+        jsonResponse.put(RESPONSEDETAIL, book);
         logger.info("Finaliza controlador de búsqueda de libros por ISBN");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
@@ -64,7 +64,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, books);
+        jsonResponse.put(RESPONSEDETAIL, books);
         logger.info("Finaliza controlador de búsqueda de libros por autor");
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK);
     }
@@ -77,7 +77,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, bookResponse);
+        jsonResponse.put(RESPONSEDETAIL, bookResponse);
         logger.info("Finaliza controlador de guardado de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
@@ -90,7 +90,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, bookResponse);
+        jsonResponse.put(RESPONSEDETAIL, bookResponse);
         logger.info("Finaliza controlador de eliminación de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
@@ -103,7 +103,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, bookResponse);
+        jsonResponse.put(RESPONSEDETAIL, bookResponse);
         logger.info("Finaliza controlador de eliminación de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
@@ -116,7 +116,7 @@ public class BookController {
         responseOk.setBussinessMeaning(OPCORRECTA);
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
-        jsonResponse.put(BOOKDETAIL, bookResponse);
+        jsonResponse.put(RESPONSEDETAIL, bookResponse);
         logger.info("Finaliza controlador de actualización de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
