@@ -1,9 +1,6 @@
 package com.afdevelopment.biblioteca.controller;
 
-import com.afdevelopment.biblioteca.exception.BookAlreadyExistsException;
-import com.afdevelopment.biblioteca.exception.BookKeysNotInRequestException;
-import com.afdevelopment.biblioteca.exception.BookNotFoundException;
-import com.afdevelopment.biblioteca.exception.UserAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.*;
 import com.afdevelopment.biblioteca.response.DetailFail;
 import com.afdevelopment.biblioteca.response.Error;
 import org.slf4j.Logger;
@@ -82,5 +79,37 @@ public class GlobalExceptionHandler {
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(UserAlreadyExistsException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(UserNotFoundException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(UserNotFoundException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidParametersException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidParametersException(InvalidParametersException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(InvalidParametersException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(InvalidParametersException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

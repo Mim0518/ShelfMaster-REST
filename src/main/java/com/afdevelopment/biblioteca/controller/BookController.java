@@ -21,7 +21,7 @@ import java.util.Map;
 public class BookController {
     private final String OPCORRECTA = "Operación correcta";
     private final String DETAIL = "detailResponse";
-    private final String SUCCESSCODE = "SUC-01";
+    private final String SUCCESSCODE = "SUC-001";
     private final String RESPONSEDETAIL = "bookDetail";
     private final BookService bookService;
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
