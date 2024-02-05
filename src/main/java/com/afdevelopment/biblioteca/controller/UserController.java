@@ -2,6 +2,8 @@ package com.afdevelopment.biblioteca.controller;
 
 
 import com.afdevelopment.biblioteca.model.User;
+import com.afdevelopment.biblioteca.request.GetBook;
+import com.afdevelopment.biblioteca.request.GetUser;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.UserService;
 import org.slf4j.Logger;
@@ -51,6 +53,19 @@ public class UserController {
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, user);
         logger.info("Finaliza controlador de búsqueda de usuarios por curp");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+    @PostMapping("/delete/curp")
+    public ResponseEntity<Map<String, Object>> deleteUserByCurp(@RequestBody GetUser getUser){
+        logger.info("Inicia controlador de eliminación de usuarios");
+        String userResponse = userService.deleteUserByCurp(getUser);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, userResponse);
+        logger.info("Finaliza controlador de eliminación de usuarios");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }
