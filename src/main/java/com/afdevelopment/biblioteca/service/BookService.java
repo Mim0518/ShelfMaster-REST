@@ -4,6 +4,7 @@ import com.afdevelopment.biblioteca.dto.BookDto;
 import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
+import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
 import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.repository.BookMapper;
 import com.afdevelopment.biblioteca.repository.BookRepository;
@@ -36,6 +37,8 @@ public class BookService {
         return foundBook;
     }
     public Book findByISBN(String isbn){
+        if(isbnIsInvalid(isbn))
+            throw new InvalidParametersException("El ISBN enviado no es válido");
         logger.info("Buscando libro con ISBN: ".concat(isbn));
         Book foundBook = bookRepository.findBookByIsbn(isbn);
         if (foundBook == null){
@@ -60,6 +63,8 @@ public class BookService {
         logger.info("Guardando el libro ".concat(book.getTitle()).concat(" de ").concat(book.getAuthor()));
         Book responseBook;
         try{
+            if(isbnIsInvalid(book.getIsbn()))
+                throw new InvalidParametersException("El ISBN del libro a guardar no es válido");
             responseBook = bookRepository.save(book);
         } catch (Exception e) {
             throw new BookAlreadyExistsException("El libro con ISBN ".concat(book.getIsbn())
@@ -69,6 +74,8 @@ public class BookService {
     }
     @Transactional
     public String deleteBookByISBN(String isbn){
+        if(isbnIsInvalid(isbn))
+            throw new InvalidParametersException("El ISBN enviado no es válido");
         logger.info("Eliminando el libro con ISBN ".concat(isbn));
         Book isInDB = bookRepository.findBookByIsbn(isbn);
         if(isInDB == null){
@@ -97,6 +104,8 @@ public class BookService {
         }
     }
     public Book patchBook(BookDto bookDto){
+        if(isbnIsInvalid(bookDto.getIsbn()))
+            throw new InvalidParametersException("El ISBN actualizado no es válido");
         Book toPatch;
         if (bookDto.getId() != null) {
             toPatch =  bookRepository.findBookById(bookDto.getId());
@@ -109,5 +118,20 @@ public class BookService {
         bookRepository.save(toPatch);
         return toPatch;
     }
+    public List<Book> findAll() {
+        List<Book> allBooks = bookRepository.findAll();
+        if(allBooks.isEmpty()) throw new BookNotFoundException("No existen libros registrados");
+        return allBooks;
+    }
 
+    private boolean isbnIsInvalid(String isbn){
+        final String REGEX_ISBN="^(97([89]))?\\d{9}(\\d|X)$";
+        if (!isbn.matches(REGEX_ISBN)){
+            String message = "El ISBN ingresado no es válido, revise el formato ".concat(isbn);
+            logger.info(message);
+            return true;
+        }
+        logger.info("El ISBN ingresado es válido, se continua con el flujo");
+        return false;
+    }
 }

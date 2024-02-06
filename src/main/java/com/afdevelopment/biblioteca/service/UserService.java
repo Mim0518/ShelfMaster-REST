@@ -74,10 +74,13 @@ public class UserService {
     }
     public User patchUser(UserDto userDto){
         User toPatch;
-        if (userDto.getCurp() != null) {
-            toPatch =  userRepository.findUserByCurp(userDto.getCurp());
+        if (curpIsInvalid(userDto.getCurp())){
+            throw new InvalidParametersException("La curp ingresada no es válida");
+        }
+        if (userDto.getId() != null) {
+            toPatch =  userRepository.findUserById(userDto.getId());
         } else {
-            throw new UserKeysNotInRequestException("El CURP del usuario a actualizar no puede ser nulo");
+            throw new UserKeysNotInRequestException("El Id del usuario a actualizar no puede ser nulo");
         }
         if(toPatch == null){
             throw new UserNotFoundException("El usuario con CURP ".concat(userDto.getCurp()).concat(" no existe"));
@@ -86,11 +89,12 @@ public class UserService {
         userRepository.save(toPatch);
         return toPatch;
     }
-    public boolean curpIsInvalid(String curp){
-        String REGEX_CURP =
-                "^([A-Z][AEIOUX][A-Z]{2}\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])[HM]" +
-                        "(?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)" +
-                        "[B-DF-HJ-NP-TV-Z]{3}[A-Z\\d])(\\d)$";
+    private boolean curpIsInvalid(String curp){
+        final String REGEX_CURP =
+                "^[A-Z]{1}[AEIOUX]{1}[A-Z]{2}((\\d{2}((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01])|(0[13-9]|1[0-2])" +
+                        "(0[1-9]|[12][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8])))|([02468][048]|[13579][26])0229)[HM]{1}" +
+                        "(AS|BC|BS|CC|CS|CH|CL|CM|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE)" +
+                        "[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]{1}[0-9]$";
         if(!curp.toUpperCase().matches(REGEX_CURP)){
             String message = "La curp ingresada no es válida, revise el formato ".concat(curp);
             logger.info(message);

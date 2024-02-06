@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
     User findUserByCurp(String curp);
+    User findUserById(Integer Id);
     void deleteUserByCurp(String curp);
 }

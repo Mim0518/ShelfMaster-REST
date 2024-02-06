@@ -28,7 +28,6 @@ public class BookController {
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
-
     @GetMapping("/id/{bookId}")
     public ResponseEntity<Map<String, Object>> bookById(@PathVariable Integer bookId){
         logger.info("Inicia controlador de búsqueda de libros por id");
@@ -120,5 +119,17 @@ public class BookController {
         logger.info("Finaliza controlador de actualización de libros");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
-
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> findAllBooks(){
+        logger.info("Inicia controlador de búsqueda general de libros");
+        List<Book> allBooks = bookService.findAll();
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, allBooks);
+        logger.info("Finaliza controlador de búsqueda general de libros");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
 }
