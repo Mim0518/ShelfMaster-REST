@@ -2,7 +2,11 @@ package com.afdevelopment.biblioteca.service;
 
 
 import com.afdevelopment.biblioteca.dto.UserDto;
-import com.afdevelopment.biblioteca.exception.*;
+import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
+import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
+import com.afdevelopment.biblioteca.exception.user.UserAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.user.UserKeysNotInRequestException;
+import com.afdevelopment.biblioteca.exception.user.UserNotFoundException;
 import com.afdevelopment.biblioteca.model.User;
 import com.afdevelopment.biblioteca.repository.UserMapper;
 import com.afdevelopment.biblioteca.repository.UserRepository;

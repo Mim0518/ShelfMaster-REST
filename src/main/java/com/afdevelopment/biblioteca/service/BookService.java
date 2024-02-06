@@ -1,20 +1,18 @@
 package com.afdevelopment.biblioteca.service;
 
 import com.afdevelopment.biblioteca.dto.BookDto;
-import com.afdevelopment.biblioteca.exception.BookAlreadyExistsException;
-import com.afdevelopment.biblioteca.exception.BookKeysNotInRequestException;
-import com.afdevelopment.biblioteca.exception.BookNotFoundException;
+import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
+import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
 import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.repository.BookMapper;
 import com.afdevelopment.biblioteca.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class BookService {

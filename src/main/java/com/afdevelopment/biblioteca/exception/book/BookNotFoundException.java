@@ -1,4 +1,4 @@
-package com.afdevelopment.biblioteca.exception;
+package com.afdevelopment.biblioteca.exception.book;
 
 public class BookNotFoundException extends RuntimeException{
     private final static String code = "EX-001";

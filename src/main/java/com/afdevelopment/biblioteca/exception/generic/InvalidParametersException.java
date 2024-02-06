@@ -1,4 +1,4 @@
-package com.afdevelopment.biblioteca.exception;
+package com.afdevelopment.biblioteca.exception.generic;
 
 public class InvalidParametersException extends RuntimeException{
     private final static String code = "EX-006";

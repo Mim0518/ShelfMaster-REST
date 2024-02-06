@@ -1,4 +1,4 @@
-package com.afdevelopment.biblioteca.exception;
+package com.afdevelopment.biblioteca.exception.user;
 
 public class UserNotFoundException extends RuntimeException{
     private final static String code = "EX-005";

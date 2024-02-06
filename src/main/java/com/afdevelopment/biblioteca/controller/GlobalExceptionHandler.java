@@ -1,6 +1,12 @@
 package com.afdevelopment.biblioteca.controller;
 
-import com.afdevelopment.biblioteca.exception.*;
+import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
+import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
+import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
+import com.afdevelopment.biblioteca.exception.user.UserAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.user.UserKeysNotInRequestException;
+import com.afdevelopment.biblioteca.exception.user.UserNotFoundException;
 import com.afdevelopment.biblioteca.response.DetailFail;
 import com.afdevelopment.biblioteca.response.Error;
 import org.slf4j.Logger;
