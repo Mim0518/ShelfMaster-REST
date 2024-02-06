@@ -1,6 +1,9 @@
 package com.afdevelopment.biblioteca.controller;
 
 
+import com.afdevelopment.biblioteca.dto.BookDto;
+import com.afdevelopment.biblioteca.dto.UserDto;
+import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.model.User;
 import com.afdevelopment.biblioteca.request.GetBook;
 import com.afdevelopment.biblioteca.request.GetUser;
@@ -66,6 +69,19 @@ public class UserController {
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, userResponse);
         logger.info("Finaliza controlador de eliminación de usuarios");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+    @PatchMapping("/update")
+    public ResponseEntity<Map<String, Object>> patchUser(@RequestBody UserDto userDto){
+        logger.info("Inicia controlador de actualización de usuarios");
+        User userResponse = userService.patchUser(userDto);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, userResponse);
+        logger.info("Finaliza controlador de actualización de usuarios");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }

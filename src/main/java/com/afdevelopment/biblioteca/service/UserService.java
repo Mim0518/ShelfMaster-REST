@@ -1,12 +1,10 @@
 package com.afdevelopment.biblioteca.service;
 
 
-import com.afdevelopment.biblioteca.exception.BookNotFoundException;
-import com.afdevelopment.biblioteca.exception.InvalidParametersException;
-import com.afdevelopment.biblioteca.exception.UserAlreadyExistsException;
-import com.afdevelopment.biblioteca.exception.UserNotFoundException;
-import com.afdevelopment.biblioteca.model.Book;
+import com.afdevelopment.biblioteca.dto.UserDto;
+import com.afdevelopment.biblioteca.exception.*;
 import com.afdevelopment.biblioteca.model.User;
+import com.afdevelopment.biblioteca.repository.UserMapper;
 import com.afdevelopment.biblioteca.repository.UserRepository;
 import com.afdevelopment.biblioteca.request.GetUser;
 import jakarta.transaction.Transactional;
@@ -19,8 +17,10 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    final UserMapper userMapper;
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public User saveUser(User user){
@@ -67,6 +67,20 @@ public class UserService {
             userRepository.deleteUserByCurp(getUser.getCurp());
             return "Usuario eliminado con éxito";
         }
+    }
+    public User patchUser(UserDto userDto){
+        User toPatch;
+        if (userDto.getCurp() != null) {
+            toPatch =  userRepository.findUserByCurp(userDto.getCurp());
+        } else {
+            throw new UserKeysNotInRequestException("El CURP del usuario a actualizar no puede ser nulo");
+        }
+        if(toPatch == null){
+            throw new UserNotFoundException("El usuario con CURP ".concat(userDto.getCurp()).concat(" no existe"));
+        }
+        userMapper.updateUserFromDto(userDto, toPatch);
+        userRepository.save(toPatch);
+        return toPatch;
     }
     public boolean curpIsInvalid(String curp){
         String REGEX_CURP =

@@ -112,4 +112,19 @@ public class GlobalExceptionHandler {
         logger.info(InvalidParametersException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserKeysNotInRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleUserKeysNotInRequestException(UserKeysNotInRequestException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(UserKeysNotInRequestException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(UserKeysNotInRequestException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
 }
