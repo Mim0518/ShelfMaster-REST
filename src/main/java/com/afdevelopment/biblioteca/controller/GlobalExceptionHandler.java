@@ -4,6 +4,9 @@ import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
 import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
+import com.afdevelopment.biblioteca.exception.shelf.ShelfAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.shelf.ShelfKeyesNotInRequestException;
+import com.afdevelopment.biblioteca.exception.shelf.ShelfNotFoundException;
 import com.afdevelopment.biblioteca.exception.user.UserAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.user.UserKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.user.UserNotFoundException;
@@ -131,6 +134,51 @@ public class GlobalExceptionHandler {
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(UserKeysNotInRequestException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ShelfAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleShelfAlreadyExistsException(ShelfAlreadyExistsException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(ShelfAlreadyExistsException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(ShelfAlreadyExistsException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ShelfNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleShelfNotFoundException(ShelfNotFoundException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(ShelfNotFoundException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(ShelfNotFoundException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ShelfKeyesNotInRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleShelfKeyesNotInRequestException(ShelfKeyesNotInRequestException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(ShelfKeyesNotInRequestException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(ShelfKeyesNotInRequestException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }
