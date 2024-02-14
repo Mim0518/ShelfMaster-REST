@@ -4,6 +4,9 @@ import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
 import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
+import com.afdevelopment.biblioteca.exception.lent.BookAlreadyLentException;
+import com.afdevelopment.biblioteca.exception.lent.ForeignKeysNotExistentException;
+import com.afdevelopment.biblioteca.exception.lent.LentsNotFoundException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfKeyesNotInRequestException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfNotFoundException;
@@ -180,5 +183,50 @@ public class GlobalExceptionHandler {
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(ShelfKeyesNotInRequestException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(LentsNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNoLentsFoundException(LentsNotFoundException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(LentsNotFoundException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(LentsNotFoundException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.NOT_FOUND);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ForeignKeysNotExistentException.class)
+    public ResponseEntity<Map<String, Object>> handleForeignKeysNotExistentException(ForeignKeysNotExistentException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(ForeignKeysNotExistentException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(ForeignKeysNotExistentException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(BookAlreadyLentException.class)
+    public ResponseEntity<Map<String, Object>> handleBookAlreadyLentException(BookAlreadyLentException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(BookAlreadyLentException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(BookAlreadyLentException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
     }
 }

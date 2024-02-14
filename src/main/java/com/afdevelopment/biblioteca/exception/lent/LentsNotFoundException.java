@@ -1,8 +1,8 @@
 package com.afdevelopment.biblioteca.exception.lent;
 
-public class NoLentsFoundException extends RuntimeException{
+public class LentsNotFoundException extends RuntimeException{
     private final static String code = "EX-011";
-    public NoLentsFoundException(String message){
+    public LentsNotFoundException(String message){
         super(message);
     }
     public static String getCode(){

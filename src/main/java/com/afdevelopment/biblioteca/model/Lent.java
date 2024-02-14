@@ -10,9 +10,10 @@ public class Lent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer user_id;
+    private Integer userId;
+    private Integer bookId;
     private String date;
-    private boolean lent;
+    private boolean active;
 
     public Integer getId() {
         return id;
@@ -22,12 +23,20 @@ public class Lent {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Integer bookId) {
+        this.bookId = bookId;
     }
 
     public String getDate() {
@@ -38,21 +47,22 @@ public class Lent {
         this.date = date;
     }
 
-    public boolean isLent() {
-        return lent;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setLent(boolean lent) {
-        this.lent = lent;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
     public String toString() {
         return "Lent{" +
                 "id=" + id +
-                ", user_id=" + user_id +
+                ", userId=" + userId +
+                ", bookId=" + bookId +
                 ", date='" + date + '\'' +
-                ", lent=" + lent +
+                ", active=" + active +
                 '}';
     }
 }
