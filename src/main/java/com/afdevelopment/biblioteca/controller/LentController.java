@@ -32,9 +32,9 @@ public class LentController {
         this.lentService = lentService;
     }
 
-    @GetMapping("/id/{Id}")
-    public ResponseEntity<Map<String, Object>> getLentsById(@PathVariable Integer Id){
-        logger.info("Inicia controlador de búsqueda de préstamos por id");
+    @GetMapping("/user/{Id}")
+    public ResponseEntity<Map<String, Object>> getLentsByUserId(@PathVariable Integer Id){
+        logger.info("Inicia controlador de búsqueda de préstamos por id de usuario");
         List<Lent> lents = lentService.findByUserId(Id);
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
@@ -42,13 +42,26 @@ public class LentController {
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, lents);
-        logger.info("Finaliza controlador de búsqueda de préstamos por id");
+        logger.info("Finaliza controlador de búsqueda de préstamos por id de usuario");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+    @GetMapping("/id/{Id}")
+    public ResponseEntity<Map<String, Object>> getLentsByLentId(@PathVariable Integer Id){
+        logger.info("Inicia controlador de búsqueda de préstamos por id del préstamo");
+        Lent lent = lentService.findByLentId(Id);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, lent);
+        logger.info("Finaliza controlador de búsqueda de préstamos por id del préstamo");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PostMapping("/new")
-    public ResponseEntity<Map<String, Object>> saveLent(@RequestBody GetLent lent){
+    public ResponseEntity<Map<String, Object>> lentBook(@RequestBody GetLent lent){
         logger.info("Inicia controlador de guardado de préstamos");
-        Lent lentResponse = lentService.saveLent(lent);
+        Lent lentResponse = lentService.lentBook(lent);
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
         responseOk.setBussinessMeaning(OPCORRECTA);
@@ -56,6 +69,19 @@ public class LentController {
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, lentResponse);
         logger.info("Finaliza controlador de guardado de préstamos");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+    @PostMapping("/return")
+    public ResponseEntity<Map<String, Object>> returnBook(@RequestBody GetLent lent){
+        logger.info("Inicia controlador de regreso de préstamos");
+        Lent lentResponse = lentService.returnBook(lent);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, lentResponse);
+        logger.info("Finaliza controlador de regreso de préstamos");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }

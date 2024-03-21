@@ -30,7 +30,7 @@ public class LentService {
         this.lentMapper = lentMapper;
         this.bookRepository = bookRepository;
     }
-    public Lent saveLent(GetLent lent){
+    public Lent lentBook(GetLent lent){
         logger.info("Guardando el préstamo para el usuario con id ".concat(lent.getUserId().toString()));
         Lent responseLent = new Lent();
         if (lent.getBookId() == null || lent.getUserId() == null)
@@ -43,7 +43,7 @@ public class LentService {
             throw new BookAlreadyLentException("Este libro ya está prestado");
         try {
             responseLent = lentRepository.save(responseLent);
-            bookRepository.setBookAsLent(lent.getBookId());
+            bookRepository.lentBook(lent.getBookId());
         } catch (DataIntegrityViolationException e){
             throw new ForeignKeysNotExistentException("El libro o usuario ingresados no son válidos");
         }
@@ -59,5 +59,27 @@ public class LentService {
         logger.info("Se encontraron ".concat(String.valueOf(foundLents.size()))
                 .concat("prestamos para el usuario con id ").concat(id.toString()));
         return foundLents;
+    }
+    public Lent returnBook(GetLent lent){
+        logger.info("Regresando el préstamo para el usuario con id ".concat(lent.getUserId().toString()));
+        Lent responseLent;
+        if (lent.getBookId() == null || lent.getUserId() == null)
+            throw new InvalidParametersException("No puede haber parámetros nulos en el body de la petición");
+        if(!lentRepository.lentExistsAndIsActive(lent.getBookId(), lent.getUserId()))
+            throw new LentsNotFoundException("Este usuario no tiene este libro a préstamo");
+        lentRepository.returnBook(lent.getBookId(), lent.getUserId());
+        bookRepository.returnBook(lent.getBookId());
+        responseLent = lentRepository.findLentByUserIdAndBookId(lent.getUserId(), lent.getBookId());
+        return responseLent;
+    }
+    public Lent findByLentId(Integer id){
+        logger.info("Buscando prestamos con Id: ".concat(id.toString()));
+        Lent foundLent = lentRepository.findLentById(id);
+        if (foundLent == null){
+            logger.error("No hay prestamos con este id");
+            throw new LentsNotFoundException("No se encontraron prestamos con Id ".concat(id.toString()));
+        }
+        logger.info("Se encontró el prestamo con id: "+id.toString());
+        return foundLent;
     }
 }

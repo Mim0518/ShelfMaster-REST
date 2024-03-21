@@ -10,5 +10,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface LentMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateBookFromDto(LentDto lentDto, @MappingTarget Lent entity);
+    void updateLentFromDto(LentDto lentDto, @MappingTarget Lent entity);
 }

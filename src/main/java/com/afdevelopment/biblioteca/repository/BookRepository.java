@@ -25,7 +25,11 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
     @Modifying
     @Transactional
     @Query("UPDATE Book b SET b.lent = true WHERE b.id = :id")
-    void setBookAsLent(@Param("id") Integer id);
+    void lentBook(@Param("id") Integer id);
+    @Modifying
+    @Transactional
+    @Query("UPDATE Book b SET b.lent = false WHERE b.id = :id")
+    void returnBook(@Param("id") Integer id);
     @Query("SELECT b.lent FROM Book b where b.id = :id")
     boolean isBookLent(@Param("id") Integer id);
 }
