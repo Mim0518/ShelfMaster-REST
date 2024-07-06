@@ -1,11 +1,8 @@
 package com.afdevelopment.biblioteca.controller;
 
 
-import com.afdevelopment.biblioteca.dto.BookDto;
 import com.afdevelopment.biblioteca.dto.UserDto;
-import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.model.User;
-import com.afdevelopment.biblioteca.request.GetBook;
 import com.afdevelopment.biblioteca.request.GetUser;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.UserService;
