@@ -1,8 +1,8 @@
 package com.afdevelopment.biblioteca.controller;
 
-import com.afdevelopment.biblioteca.exception.Librarian.LibrarianAlreadyExistsException;
-import com.afdevelopment.biblioteca.exception.Librarian.LibrarianNotFoundException;
-import com.afdevelopment.biblioteca.exception.Librarian.WrongPasswordException;
+import com.afdevelopment.biblioteca.exception.librarian.LibrarianAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.librarian.LibrarianNotFoundException;
+import com.afdevelopment.biblioteca.exception.librarian.WrongPasswordException;
 import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
