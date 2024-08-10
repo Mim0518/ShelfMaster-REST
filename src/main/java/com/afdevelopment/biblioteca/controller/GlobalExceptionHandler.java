@@ -1,5 +1,9 @@
 package com.afdevelopment.biblioteca.controller;
 
+import com.afdevelopment.biblioteca.exception.auth.RequiredDataException;
+import com.afdevelopment.biblioteca.exception.librarian.LibrarianAlreadyExistsException;
+import com.afdevelopment.biblioteca.exception.librarian.LibrarianNotFoundException;
+import com.afdevelopment.biblioteca.exception.auth.WrongPasswordException;
 import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
@@ -228,5 +232,50 @@ public class GlobalExceptionHandler {
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(BookAlreadyLentException.getCode().concat(" --> ").concat(e.getMessage()));
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+    }
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(LibrarianAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleLibrarianAlreadyExistsException(LibrarianAlreadyExistsException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(LibrarianAlreadyExistsException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(LibrarianAlreadyExistsException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+    }
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<Map<String, Object>> handleWrongPasswordException(WrongPasswordException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(WrongPasswordException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(WrongPasswordException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RequiredDataException.class)
+    public ResponseEntity<Map<String, Object>> handleRequiredDataException(RequiredDataException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        Error error = new Error();
+        error.setBussinessMeaning(e.getMessage());
+        error.setCode(RequiredDataException.getCode());
+        ArrayList errores = new ArrayList<>();
+        errores.add(error);
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        logger.info(RequiredDataException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

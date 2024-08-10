@@ -24,7 +24,7 @@ public class LentController {
     private final String DETAIL = "detailResponse";
     private final String SUCCESSCODE = "SUC-004";
     private final String RESPONSEDETAIL = "lentDetail";
-    private static final Logger logger = LoggerFactory.getLogger(LentService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LentController.class);
 
     private final LentService lentService;
 
