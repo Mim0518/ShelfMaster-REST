@@ -1,4 +1,4 @@
-package com.afdevelopment.biblioteca.exception.librarian;
+package com.afdevelopment.biblioteca.exception.auth;
 
 public class WrongPasswordException extends RuntimeException{
     private final static String code = "EX-015";

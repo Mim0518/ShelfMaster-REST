@@ -1,52 +1,61 @@
 package com.afdevelopment.biblioteca.controller;
 
+import com.afdevelopment.biblioteca.model.AuthResponse;
 import com.afdevelopment.biblioteca.model.Librarian;
 import com.afdevelopment.biblioteca.request.AuthRequest;
 import com.afdevelopment.biblioteca.request.RegisterRequest;
+import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.AuthService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
+    private final String OPCORRECTA = "Operación correcta";
+    private final String DETAIL = "detailResponse";
+    private final String SUCCESSCODE = "SUC-005";
+    private final String RESPONSEDETAIL = "librarianDetail";
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private final AuthenticationManager authenticationManager;
+
     private final AuthService authService;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, AuthService authService) {
-        this.authenticationManager = authenticationManager;
+    public AuthenticationController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody AuthRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
-
-            String token = JWT.create()
-                    .withSubject(request.getUsername())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 864_000_00)) // 10 días
-                    .sign(Algorithm.HMAC256("secret"));
-            return ResponseEntity.ok(token);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Authentication failed");
-        }
+    public ResponseEntity<Map<String, Object>> authenticate(@RequestBody AuthRequest request) {
+        logger.info("Inicia controlador de autenticación");
+        AuthResponse authResponse = authService.authenticateUser(request);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, authResponse);
+        logger.info("Finaliza controlador de autenticación");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Librarian> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest request) {
+        logger.info("Inicia controlador de registro de usuario");
         Librarian registeredLibrarian = authService.register(request);
-        return ResponseEntity.ok(registeredLibrarian);
+        DetailResponse responseOk = new DetailResponse();
+        responseOk.setCode(SUCCESSCODE);
+        responseOk.setBussinessMeaning(OPCORRECTA);
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put(DETAIL, responseOk);
+        jsonResponse.put(RESPONSEDETAIL, registeredLibrarian);
+        logger.info("Finaliza controlador de registro de usuario");
+        return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 }

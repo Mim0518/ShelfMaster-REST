@@ -1,8 +1,9 @@
 package com.afdevelopment.biblioteca.controller;
 
+import com.afdevelopment.biblioteca.exception.auth.RequiredDataException;
 import com.afdevelopment.biblioteca.exception.librarian.LibrarianAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.librarian.LibrarianNotFoundException;
-import com.afdevelopment.biblioteca.exception.librarian.WrongPasswordException;
+import com.afdevelopment.biblioteca.exception.auth.WrongPasswordException;
 import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
@@ -260,21 +261,21 @@ public class GlobalExceptionHandler {
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(WrongPasswordException.getCode().concat(" --> ").concat(e.getMessage()));
-        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
     }
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(LibrarianNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleLibrarianNotFoundException(LibrarianNotFoundException e){
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RequiredDataException.class)
+    public ResponseEntity<Map<String, Object>> handleRequiredDataException(RequiredDataException e){
         Map<String,Object> jsonResponse = new HashMap<>();
         DetailFail failResponse = new DetailFail();
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
-        error.setCode(LibrarianNotFoundException.getCode());
+        error.setCode(RequiredDataException.getCode());
         ArrayList errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
-        logger.info(LibrarianNotFoundException.getCode().concat(" --> ").concat(e.getMessage()));
-        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.CONFLICT);
+        logger.info(RequiredDataException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }
