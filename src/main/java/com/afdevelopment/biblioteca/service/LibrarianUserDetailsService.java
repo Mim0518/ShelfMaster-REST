@@ -27,7 +27,7 @@ public class LibrarianUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 librarian.getUsername(),
                 librarian.getPassword(),
-                List.of(() -> librarian.getPermisos()) // Assuming 'permisos' is a comma-separated list of roles
+                List.of(librarian::getPermisos) // Assuming 'permisos' is a comma-separated list of roles
         );
     }
 }

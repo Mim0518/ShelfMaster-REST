@@ -1,8 +1,6 @@
 package com.afdevelopment.biblioteca.controller;
 
-import com.afdevelopment.biblioteca.model.Book;
 import com.afdevelopment.biblioteca.model.Lent;
-import com.afdevelopment.biblioteca.model.Shelf;
 import com.afdevelopment.biblioteca.request.GetLent;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.LentService;

@@ -1,9 +1,7 @@
 package com.afdevelopment.biblioteca.controller;
 
 import com.afdevelopment.biblioteca.dto.ShelfDto;
-import com.afdevelopment.biblioteca.dto.UserDto;
 import com.afdevelopment.biblioteca.model.Shelf;
-import com.afdevelopment.biblioteca.model.User;
 import com.afdevelopment.biblioteca.request.GetShelf;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.ShelfService;

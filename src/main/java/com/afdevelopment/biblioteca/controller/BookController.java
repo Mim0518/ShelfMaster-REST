@@ -82,7 +82,7 @@ public class BookController {
     }
     @PostMapping("/delete/isbn")
     public ResponseEntity<Map<String, Object>> deleteBookByISBN(@RequestBody GetBook getBook){
-        logger.info("Inicia controlador de eliminación de libros");
+        logger.info("Inicia controlador de eliminación de libros por ISBN");
         String bookResponse = bookService.deleteBookByISBN(getBook.getIsbn());
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
@@ -90,12 +90,12 @@ public class BookController {
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, bookResponse);
-        logger.info("Finaliza controlador de eliminación de libros");
+        logger.info("Finaliza controlador de eliminación de libros por ISBN");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PostMapping("/delete/id")
     public ResponseEntity<Map<String, Object>> deleteBookById(@RequestBody GetBook getBook){
-        logger.info("Inicia controlador de eliminación de libros");
+        logger.info("Inicia controlador de eliminación de libros por ID");
         String bookResponse = bookService.deleteBookById(getBook.getId());
         DetailResponse responseOk = new DetailResponse();
         responseOk.setCode(SUCCESSCODE);
@@ -103,7 +103,7 @@ public class BookController {
         Map<String, Object> jsonResponse = new HashMap<>();
         jsonResponse.put(DETAIL, responseOk);
         jsonResponse.put(RESPONSEDETAIL, bookResponse);
-        logger.info("Finaliza controlador de eliminación de libros");
+        logger.info("Finaliza controlador de eliminación de libros por ID");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PatchMapping("/update")

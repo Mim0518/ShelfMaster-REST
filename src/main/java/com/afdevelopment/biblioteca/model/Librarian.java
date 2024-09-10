@@ -3,7 +3,7 @@ package com.afdevelopment.biblioteca.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 @Entity
 public class Librarian {

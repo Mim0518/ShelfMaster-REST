@@ -29,7 +29,7 @@ public class BookService {
         logger.info("Buscando libro con Id: ".concat(id.toString()));
         Book foundBook = bookRepository.findBookById(id);
         if (foundBook == null){
-            logger.error("Libro no encontrado");
+            logger.error("Libro con id {} no encontrado", id);
             throw new BookNotFoundException("No se encontró el libro con Id ".concat(id.toString()));
         }
         logger.info("Se encontró el libro ".concat(foundBook.getTitle())
@@ -42,7 +42,7 @@ public class BookService {
         logger.info("Buscando libro con ISBN: ".concat(isbn));
         Book foundBook = bookRepository.findBookByIsbn(isbn);
         if (foundBook == null){
-            logger.error("Libro no encontrado");
+            logger.error("Libro con ISBN {} no encontrado", isbn);
             throw new BookNotFoundException("No se encontró el libro con ISBN ".concat(isbn));
         }
         logger.info("Se encontró el libro ".concat(foundBook.getTitle())
@@ -85,7 +85,7 @@ public class BookService {
                     .concat(" no pudo ser eliminado"));
         }else{
             bookRepository.deleteBookByIsbn(isbn);
-            return "Libro eliminado";
+            return "Libro con ISBN "+isbn+" eliminado";
         }
     }
     @Transactional
@@ -100,7 +100,7 @@ public class BookService {
         }else{
             bookRepository.deleteBookById(Id);
             logger.info("Libro eliminado");
-            return "Libro eliminado";
+            return "Libro con ID "+Id+" eliminado";
         }
     }
     public Book patchBook(BookDto bookDto){

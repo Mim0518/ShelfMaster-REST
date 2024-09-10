@@ -1,33 +1,19 @@
 package com.afdevelopment.biblioteca.service;
 
 import com.afdevelopment.biblioteca.dto.ShelfDto;
-import com.afdevelopment.biblioteca.dto.UserDto;
 import com.afdevelopment.biblioteca.exception.book.BookNotFoundException;
 import com.afdevelopment.biblioteca.exception.generic.InvalidParametersException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfKeyesNotInRequestException;
 import com.afdevelopment.biblioteca.exception.shelf.ShelfNotFoundException;
-import com.afdevelopment.biblioteca.exception.user.UserKeysNotInRequestException;
-import com.afdevelopment.biblioteca.exception.user.UserNotFoundException;
 import com.afdevelopment.biblioteca.model.Shelf;
-import com.afdevelopment.biblioteca.model.User;
 import com.afdevelopment.biblioteca.repository.ShelfMapper;
 import com.afdevelopment.biblioteca.repository.ShelfRepository;
 import com.afdevelopment.biblioteca.request.GetShelf;
-import com.afdevelopment.biblioteca.request.GetUser;
-import com.afdevelopment.biblioteca.response.DetailResponse;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ShelfService {
@@ -84,7 +70,7 @@ public class ShelfService {
                     .concat(" no se encuentra en la base de datos"));
         }else{
             shelfRepository.deleteShelfById(getShelf.getId());
-            return "Estante eliminado con éxito";
+            return "Estante con Id "+getShelf.getId()+" eliminado con éxito";
         }
     }
     public Shelf patchShelf(ShelfDto shelfDto){

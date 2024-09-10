@@ -2,7 +2,6 @@ package com.afdevelopment.biblioteca.controller;
 
 import com.afdevelopment.biblioteca.exception.auth.RequiredDataException;
 import com.afdevelopment.biblioteca.exception.librarian.LibrarianAlreadyExistsException;
-import com.afdevelopment.biblioteca.exception.librarian.LibrarianNotFoundException;
 import com.afdevelopment.biblioteca.exception.auth.WrongPasswordException;
 import com.afdevelopment.biblioteca.exception.book.BookAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.book.BookKeysNotInRequestException;
@@ -43,7 +42,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(BookNotFoundException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -58,7 +57,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(BookAlreadyExistsException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -73,7 +72,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(BookKeysNotInRequestException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -89,7 +88,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(UserAlreadyExistsException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -105,7 +104,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(UserNotFoundException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -121,7 +120,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(InvalidParametersException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -136,7 +135,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(UserKeysNotInRequestException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -151,7 +150,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(ShelfAlreadyExistsException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -166,7 +165,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(ShelfNotFoundException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -181,7 +180,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(ShelfKeyesNotInRequestException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -196,7 +195,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(LentsNotFoundException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -211,7 +210,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(ForeignKeysNotExistentException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -226,7 +225,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(BookAlreadyLentException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -241,7 +240,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(LibrarianAlreadyExistsException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -256,7 +255,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(WrongPasswordException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
@@ -271,7 +270,7 @@ public class GlobalExceptionHandler {
         Error error = new Error();
         error.setBussinessMeaning(e.getMessage());
         error.setCode(RequiredDataException.getCode());
-        ArrayList errores = new ArrayList<>();
+        ArrayList <Error> errores = new ArrayList<>();
         errores.add(error);
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);

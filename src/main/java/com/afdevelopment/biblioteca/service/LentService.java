@@ -22,12 +22,10 @@ public class LentService {
     private static final Logger logger = LoggerFactory.getLogger(LentService.class);
 
     private final LentRepository lentRepository;
-    private final LentMapper lentMapper;
 
     private final BookRepository bookRepository;
     public LentService(LentRepository lentRepository, LentMapper lentMapper, BookRepository bookRepository) {
         this.lentRepository = lentRepository;
-        this.lentMapper = lentMapper;
         this.bookRepository = bookRepository;
     }
     public Lent lentBook(GetLent lent){
@@ -79,7 +77,7 @@ public class LentService {
             logger.error("No hay prestamos con este id");
             throw new LentsNotFoundException("No se encontraron prestamos con Id ".concat(id.toString()));
         }
-        logger.info("Se encontró el prestamo con id: "+id.toString());
+        logger.info("Se encontró el prestamo con id: {}", id);
         return foundLent;
     }
 }
