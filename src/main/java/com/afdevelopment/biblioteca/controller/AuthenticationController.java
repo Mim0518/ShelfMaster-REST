@@ -1,9 +1,12 @@
 package com.afdevelopment.biblioteca.controller;
 
+import com.afdevelopment.biblioteca.exception.auth.TokenRefreshException;
 import com.afdevelopment.biblioteca.model.AuthResponse;
 import com.afdevelopment.biblioteca.model.Librarian;
+import com.afdevelopment.biblioteca.model.TokenRefreshResponse;
 import com.afdevelopment.biblioteca.request.AuthRequest;
 import com.afdevelopment.biblioteca.request.RegisterRequest;
+import com.afdevelopment.biblioteca.request.TokenRefreshRequest;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.AuthService;
 import org.slf4j.Logger;
@@ -58,5 +61,29 @@ public class AuthenticationController {
         jsonResponse.put(RESPONSEDETAIL, registeredLibrarian);
         logger.info("Finaliza controlador de registro de usuario");
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+    }
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody TokenRefreshRequest request) {
+        logger.info("Inicia controlador de refresh token");
+        try {
+            TokenRefreshResponse tokenRefreshResponse = authService.refreshToken(request);
+            DetailResponse responseOk = new DetailResponse();
+            responseOk.setCode(SUCCESSCODE);
+            responseOk.setBussinessMeaning(OPCORRECTA);
+            Map<String, Object> jsonResponse = new HashMap<>();
+            jsonResponse.put(DETAIL, responseOk);
+            jsonResponse.put(RESPONSEDETAIL, tokenRefreshResponse);
+            logger.info("Finaliza controlador de refresh token");
+            return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK);
+        } catch (TokenRefreshException e) {
+            DetailResponse responseError = new DetailResponse();
+            responseError.setCode("ERR-001");
+            responseError.setBussinessMeaning("Error en refresh token: " + e.getMessage());
+            Map<String, Object> jsonResponse = new HashMap<>();
+            jsonResponse.put(DETAIL, responseError);
+            logger.error("Error en refresh token: {}", e.getMessage());
+            return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.FORBIDDEN);
+        }
     }
 }

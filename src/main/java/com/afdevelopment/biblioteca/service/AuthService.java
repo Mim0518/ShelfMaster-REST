@@ -2,16 +2,21 @@ package com.afdevelopment.biblioteca.service;
 
 
 import com.afdevelopment.biblioteca.exception.auth.RequiredDataException;
+import com.afdevelopment.biblioteca.exception.auth.TokenRefreshException;
 import com.afdevelopment.biblioteca.exception.librarian.LibrarianAlreadyExistsException;
 import com.afdevelopment.biblioteca.exception.auth.WrongPasswordException;
 import com.afdevelopment.biblioteca.exception.librarian.LibrarianNotFoundException;
 import com.afdevelopment.biblioteca.model.AuthResponse;
 import com.afdevelopment.biblioteca.model.Librarian;
+import com.afdevelopment.biblioteca.model.RefreshToken;
+import com.afdevelopment.biblioteca.model.TokenRefreshResponse;
 import com.afdevelopment.biblioteca.repository.LibrarianRepository;
 import com.afdevelopment.biblioteca.request.AuthRequest;
 import com.afdevelopment.biblioteca.request.RegisterRequest;
+import com.afdevelopment.biblioteca.request.TokenRefreshRequest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,11 +32,20 @@ public class AuthService {
     private final LibrarianRepository librarianRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthService(LibrarianRepository librarianRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    @Value("${security.jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${security.jwt.expiration:3600000}")
+    private long jwtExpiration; // Default to 1 hour if not specified
+
+    public AuthService(LibrarianRepository librarianRepository, PasswordEncoder passwordEncoder, 
+                      AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService) {
         this.librarianRepository = librarianRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public AuthResponse authenticateUser(AuthRequest request){
@@ -49,13 +63,35 @@ public class AuthService {
             authResponse.setUser(request.getUsername());
             String token = JWT.create()
                     .withSubject(request.getUsername())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 864_000_00)) // 10 días
-                    .sign(Algorithm.HMAC256("secret"));
+                    .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration)) // Using configured expiration time
+                    .sign(Algorithm.HMAC256(jwtSecret));
             authResponse.setToken(token);
+
+            // Create a refresh token
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.getUsername());
+            authResponse.setRefreshToken(refreshToken.getToken());
         } catch (AuthenticationException e) {
             throw new WrongPasswordException("Contraseña incorrecta");
         }
         return authResponse;
+    }
+
+    public TokenRefreshResponse refreshToken(TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getLibrarian)
+                .map(librarian -> {
+                    String token = JWT.create()
+                            .withSubject(librarian.getUsername())
+                            .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
+                            .sign(Algorithm.HMAC256(jwtSecret));
+
+                    return new TokenRefreshResponse(token, requestRefreshToken);
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                        "Refresh token is not in database!"));
     }
     public Librarian register(RegisterRequest request) {
         Librarian librarian = new Librarian();
