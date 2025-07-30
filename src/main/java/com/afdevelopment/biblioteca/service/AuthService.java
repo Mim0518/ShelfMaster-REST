@@ -16,6 +16,9 @@ import com.afdevelopment.biblioteca.request.RegisterRequest;
 import com.afdevelopment.biblioteca.request.TokenRefreshRequest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -109,4 +114,51 @@ public class AuthService {
         }
         return librarian;
     }
+
+    public boolean isSessionActive(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return false;
+        }
+
+        try {
+            // Eliminar el prefijo "Bearer "
+            String jwt = token.substring(7);
+
+            // Verificar el token
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(jwtSecret))
+                    .build()
+                    .verify(jwt);
+
+            // Verificar la expiración
+            Date expirationDate = decodedJWT.getExpiresAt();
+            return expirationDate != null && expirationDate.after(new Date());
+
+        } catch (TokenExpiredException e) {
+            return false;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+    }
+
+    public AuthResponse getSessionInfo(String token) {
+        AuthResponse authResponse = new AuthResponse();
+        if (!isSessionActive(token)) {
+            return null;
+        }
+        try {
+            String jwt = token.substring(7);
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(jwtSecret))
+                    .build()
+                    .verify(jwt);
+
+            authResponse.setUser(decodedJWT.getSubject());
+            authResponse.setToken(jwt);
+            authResponse.setRefreshToken(refreshTokenService.findByLibrarian(decodedJWT.getSubject()).getToken());
+            return authResponse;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }

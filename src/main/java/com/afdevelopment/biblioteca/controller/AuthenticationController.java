@@ -6,6 +6,7 @@ import com.afdevelopment.biblioteca.model.Librarian;
 import com.afdevelopment.biblioteca.model.TokenRefreshResponse;
 import com.afdevelopment.biblioteca.request.AuthRequest;
 import com.afdevelopment.biblioteca.request.RegisterRequest;
+import com.afdevelopment.biblioteca.request.TokenCheck;
 import com.afdevelopment.biblioteca.request.TokenRefreshRequest;
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.AuthService;
@@ -84,6 +85,24 @@ public class AuthenticationController {
             jsonResponse.put(DETAIL, responseError);
             logger.error("Error en refresh token: {}", e.getMessage());
             return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping("/check-session")
+    public ResponseEntity<?> validateSession(@RequestBody TokenCheck tokenCheck){
+        boolean isActive = authService.isSessionActive(tokenCheck.getToken());
+        if(isActive){
+            AuthResponse authResponse = authService.getSessionInfo(tokenCheck.getToken());
+            DetailResponse responseOk = new DetailResponse();
+            responseOk.setCode(SUCCESSCODE);
+            responseOk.setBussinessMeaning(OPCORRECTA);
+            Map<String, Object> jsonResponse = new HashMap<>();
+            jsonResponse.put(DETAIL, responseOk);
+            jsonResponse.put(RESPONSEDETAIL, authResponse);
+            return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "La sesión no está activa"));
         }
     }
 }
