@@ -7,7 +7,7 @@ import com.afdevelopment.biblioteca.model.TokenRefreshResponse;
 import com.afdevelopment.biblioteca.request.AuthRequest;
 import com.afdevelopment.biblioteca.request.RegisterRequest;
 import com.afdevelopment.biblioteca.request.TokenCheck;
-import com.afdevelopment.biblioteca.request.TokenRefreshRequest;
+
 import com.afdevelopment.biblioteca.response.DetailResponse;
 import com.afdevelopment.biblioteca.service.AuthService;
 import org.slf4j.Logger;
@@ -64,11 +64,11 @@ public class AuthenticationController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
 
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<Map<String, Object>> refreshToken(@RequestBody TokenRefreshRequest request) {
+    @GetMapping("/refreshtoken")
+    public ResponseEntity<Map<String, Object>> refreshToken(@RequestHeader(value = "Authorization") String authorization) {
         logger.info("Inicia controlador de refresh token");
         try {
-            TokenRefreshResponse tokenRefreshResponse = authService.refreshToken(request);
+            TokenRefreshResponse tokenRefreshResponse = authService.refreshToken(authorization);
             DetailResponse responseOk = new DetailResponse();
             responseOk.setCode(SUCCESSCODE);
             responseOk.setBussinessMeaning(OPCORRECTA);

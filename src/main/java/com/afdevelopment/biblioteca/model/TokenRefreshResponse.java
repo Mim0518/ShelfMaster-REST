@@ -1,21 +1,22 @@
 package com.afdevelopment.biblioteca.model;
 
 public class TokenRefreshResponse {
-    private String accessToken;
+    private String token;
     private String refreshToken;
-    private String tokenType = "Bearer";
+    private String user;
 
-    public TokenRefreshResponse(String accessToken, String refreshToken) {
-        this.accessToken = accessToken;
+    public TokenRefreshResponse(String token, String refreshToken, String user) {
+        this.token = token;
         this.refreshToken = refreshToken;
+        this.user = user;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getToken() {
+        return token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getRefreshToken() {
@@ -26,11 +27,11 @@ public class TokenRefreshResponse {
         this.refreshToken = refreshToken;
     }
 
-    public String getTokenType() {
-        return tokenType;
+    public String getUser() {
+        return user;
     }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
+    public void setUser(String user) {
+        this.user = user;
     }
 }
