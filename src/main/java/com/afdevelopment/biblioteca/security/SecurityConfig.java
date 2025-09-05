@@ -1,6 +1,8 @@
 package com.afdevelopment.biblioteca.security;
 
 import com.afdevelopment.biblioteca.service.LibrarianUserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +27,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final LibrarianUserDetailsService userDetailsService;
 
@@ -35,6 +39,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        if (logger.isInfoEnabled()) {
+            logger.info("Building SecurityFilterChain with stateless sessions and JWT filter");
+        }
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
@@ -62,10 +69,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:4200");
+        configuration.addAllowedOrigin("http://129.222.64.13");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
-        
+        if (logger.isInfoEnabled()) {
+            logger.info("Configured CORS: origins={} methods=* headers=* allowCredentials=true", configuration.getAllowedOrigins());
+        }
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -73,16 +83,25 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Creating AuthenticationManager bean");
+        }
         return config.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Creating PasswordEncoder bean: BCryptPasswordEncoder");
+        }
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Creating DaoAuthenticationProvider with LibrarianUserDetailsService");
+        }
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());

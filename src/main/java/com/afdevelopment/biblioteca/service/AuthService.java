@@ -109,7 +109,7 @@ public class AuthService {
                         return new TokenRefreshResponse(token, requestRefreshToken, librarian.getUsername());
                     })
                     .orElseThrow(() -> {
-                        logger.error("Refresh token no encontrado en la base de datos: {}", requestRefreshToken);
+                        logger.error("Refresh token no encontrado en la base de datos: {}", maskToken(requestRefreshToken));
                         return new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!");
                     });
         } catch (Exception e) {
@@ -117,6 +117,25 @@ public class AuthService {
             throw e;
         }
     }
+
+    private String maskToken(String token) {
+        if (token == null) return "null";
+        int len = token.length();
+        if (len <= 6) return "***";
+        String start = token.substring(0, Math.min(4, len));
+        String end = token.substring(len - 2);
+        return start + "..." + end;
+    }
+    private boolean isStrongPassword(String password) {
+        if (password == null) return false;
+        if (password.length() < 8 || password.length() > 128) return false;
+        boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
+        boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecial = password.chars().anyMatch(c -> "!@#$%^&*()_+-=[]{};:'\"|,.<>/?".indexOf(c) >= 0);
+        return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
     public Librarian register(RegisterRequest request) {
         logger.info("Iniciando proceso de registro para nuevo usuario: {}", request.getUsername());
         Librarian librarian = new Librarian();
@@ -125,6 +144,11 @@ public class AuthService {
             throw new LibrarianAlreadyExistsException("El usuario ya existe");
         }else{
             logger.info("Creando nuevo usuario: {}", request.getUsername());
+            // Fallback validation in case Bean Validation is bypassed
+            if (request.getPassword() == null || !isStrongPassword(request.getPassword())) {
+                logger.warn("Intento de registro con contraseña débil para usuario: {}", request.getUsername());
+                throw new RequiredDataException("Password does not meet complexity requirements");
+            }
             librarian.setUsername(request.getUsername());
             librarian.setPassword(passwordEncoder.encode(request.getPassword()));
             librarian.setNombre(request.getNombre());

@@ -26,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.FieldError;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -275,6 +277,36 @@ public class GlobalExceptionHandler {
         failResponse.setErrors(errores);
         jsonResponse.put(DETAIL_FAIL, failResponse);
         logger.info(RequiredDataException.getCode().concat(" --> ").concat(e.getMessage()));
+        return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException e){
+        Map<String,Object> jsonResponse = new HashMap<>();
+        DetailFail failResponse = new DetailFail();
+        ArrayList<Error> errores = new ArrayList<>();
+        // Collect simple, user-safe messages without rejected values
+        for (FieldError fe : e.getBindingResult().getFieldErrors()) {
+            Error error = new Error();
+            error.setBussinessMeaning(fe.getDefaultMessage());
+            // Keep default code "-1" to avoid implying a specific internal code
+            errores.add(error);
+        }
+        if (errores.isEmpty()) {
+            Error generic = new Error();
+            generic.setBussinessMeaning("Validation failed for request");
+            errores.add(generic);
+        }
+        failResponse.setErrors(errores);
+        jsonResponse.put(DETAIL_FAIL, failResponse);
+        // Log concise info: which fields failed (no values)
+        StringBuilder fields = new StringBuilder();
+        e.getBindingResult().getFieldErrors().forEach(fe -> {
+            if (fields.length() > 0) fields.append(", ");
+            fields.append(fe.getField());
+        });
+        logger.warn("Validation error on request body fields: {}", fields.toString());
         return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

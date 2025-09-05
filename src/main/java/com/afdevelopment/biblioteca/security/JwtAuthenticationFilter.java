@@ -41,12 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("No Bearer token present, skipping JWT auth: uri={}", request.getRequestURI());
+            }
             filterChain.doFilter(request, response);
             return;
         }
 
         String jwt = authHeader.substring(7);
         try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Attempting JWT verification: uri={}", request.getRequestURI());
+            }
             String username = JWT.require(Algorithm.HMAC256(jwtSecret))
                     .build()
                     .verify(jwt)
@@ -59,14 +65,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                logger.info("Authenticated user via JWT: username={}", username);
             }
         } catch (TokenExpiredException e) {
-            logger.warn("The token has expired: {}", e.getMessage());
+            logger.warn("JWT token expired: uri={} message={}", request.getRequestURI(), e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token has expired");
             return;
         } catch (JWTVerificationException e) {
-            logger.error("JWT verification failed: {}", e.getMessage());
+            logger.error("JWT verification failed: uri={} message={}", request.getRequestURI(), e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid token");
             return;

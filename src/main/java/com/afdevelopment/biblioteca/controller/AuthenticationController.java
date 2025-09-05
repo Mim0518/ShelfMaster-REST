@@ -51,7 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody @jakarta.validation.Valid RegisterRequest request) {
         logger.info("Inicia controlador de registro de usuario");
         Librarian registeredLibrarian = authService.register(request);
         DetailResponse responseOk = new DetailResponse();
@@ -79,12 +79,12 @@ public class AuthenticationController {
             return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK);
         } catch (TokenRefreshException e) {
             DetailResponse responseError = new DetailResponse();
-            responseError.setCode("ERR-001");
-            responseError.setBussinessMeaning("Error en refresh token: " + e.getMessage());
+            responseError.setCode("ERR-401");
+            responseError.setBussinessMeaning("Invalid refresh token");
             Map<String, Object> jsonResponse = new HashMap<>();
             jsonResponse.put(DETAIL, responseError);
-            logger.error("Error en refresh token: {}", e.getMessage());
-            return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.FORBIDDEN);
+            logger.warn("Invalid refresh token during refresh request");
+            return new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
         }
     }
 

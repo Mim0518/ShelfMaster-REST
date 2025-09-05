@@ -32,13 +32,15 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
 
-        // Only apply rate limiting to authentication endpoints
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/auth/login") || requestURI.startsWith("/auth/refreshtoken")) {
             String clientIp = getClientIP(request);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Evaluating rate limit: ip={}, uri={}, maxRequests={}, windowMinutes={}", clientIp, requestURI, maxRequests, windowMinutes);
+            }
 
             if (isRateLimited(clientIp)) {
-                logger.warn("Rate limit exceeded for IP: {}", clientIp);
+                logger.warn("Rate limit exceeded: ip={}", clientIp);
                 response.setStatus(429); // 429 Too Many Requests
                 response.getWriter().write("Rate limit exceeded. Please try again later.");
                 return;
@@ -56,12 +58,18 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         // Reset counter if window has expired
         if (currentTime - counter.getLastRequestTime() > windowMillis) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Resetting rate limit window: ip={} lastRequestTime={} now={} windowMillis={}", clientIp, counter.getLastRequestTime(), currentTime, windowMillis);
+            }
             counter.reset(currentTime);
         }
 
         // Increment counter
         counter.incrementCount();
         counter.setLastRequestTime(currentTime);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Incremented request count: ip={} count={}", clientIp, counter.getCount());
+        }
 
         // Check if rate limit is exceeded
         return counter.getCount() > maxRequests;

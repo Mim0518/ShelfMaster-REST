@@ -1,7 +1,19 @@
 package com.afdevelopment.biblioteca.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class RegisterRequest {
+    @NotBlank(message = "Username is required")
     private String username;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    )
     private String password;
     private String nombre;
     private String apellidoPaterno;
@@ -61,9 +73,10 @@ public class RegisterRequest {
 
     @Override
     public String toString() {
+        String masked = (password == null) ? null : "***";
         return "RegisterRequest{" +
                 "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + masked + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", apellidoPaterno='" + apellidoPaterno + '\'' +
                 ", apellidoMaterno='" + apellidoMaterno + '\'' +
