@@ -31,8 +31,8 @@ public class LentService {
     public Lent lentBook(GetLent lent){
         logger.info("Guardando el préstamo para el usuario con id ".concat(lent.getUserId().toString()));
         Lent responseLent = new Lent();
-        if (lent.getBookId() == null || lent.getUserId() == null)
-            throw new InvalidParametersException("No puede haber parámetros nulos en el body de la petición");
+        CommonServiceUtils.requireNonNull(lent.getBookId(), "bookId");
+        CommonServiceUtils.requireNonNull(lent.getUserId(), "userId");
         responseLent.setBookId(lent.getBookId());
         responseLent.setUserId(lent.getUserId());
         responseLent.setActive(true);
@@ -61,8 +61,8 @@ public class LentService {
     public Lent returnBook(GetLent lent){
         logger.info("Regresando el préstamo para el usuario con id ".concat(lent.getUserId().toString()));
         Lent responseLent;
-        if (lent.getBookId() == null || lent.getUserId() == null)
-            throw new InvalidParametersException("No puede haber parámetros nulos en el body de la petición");
+        CommonServiceUtils.requireNonNull(lent.getBookId(), "bookId");
+        CommonServiceUtils.requireNonNull(lent.getUserId(), "userId");
         if(!lentRepository.lentExistsAndIsActive(lent.getBookId(), lent.getUserId()))
             throw new LentsNotFoundException("Este usuario no tiene este libro a préstamo");
         lentRepository.returnBook(lent.getBookId(), lent.getUserId());

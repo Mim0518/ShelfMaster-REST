@@ -22,6 +22,9 @@ import java.util.Map;
 @SuppressWarnings("DuplicatedCode")
 @RestController
 @RequestMapping("/auth")
+/**
+ * Authentication endpoints for login, registration, token refresh and session validation.
+ */
 public class AuthenticationController {
     private final String OPCORRECTA = "Operación correcta";
     private final String DETAIL = "detailResponse";
@@ -37,6 +40,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
+    /**
+     * Authenticates a librarian with username and password.
+     *
+     * @param request authentication request containing username and password
+     * @return a response with JWT access token and refresh token
+     */
     public ResponseEntity<Map<String, Object>> authenticate(@RequestBody AuthRequest request) {
         logger.info("Inicia controlador de autenticación");
         AuthResponse authResponse = authService.authenticateUser(request);
@@ -51,6 +60,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    /**
+     * Registers a new librarian.
+     *
+     * @param request registration data validated by Bean Validation
+     * @return a response with the created librarian (password omitted)
+     */
     public ResponseEntity<Map<String, Object>> register(@RequestBody @jakarta.validation.Valid RegisterRequest request) {
         logger.info("Inicia controlador de registro de usuario");
         Librarian registeredLibrarian = authService.register(request);
@@ -65,6 +80,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/refreshtoken")
+    /**
+     * Generates a new access token based on a valid refresh token.
+     *
+     * @param authorization the Authorization header containing the refresh token
+     * @return a response with a new access token or 401 if the refresh token is invalid
+     */
     public ResponseEntity<Map<String, Object>> refreshToken(@RequestHeader(value = "Authorization") String authorization) {
         logger.info("Inicia controlador de refresh token");
         try {
@@ -89,6 +110,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/check-session")
+    /**
+     * Validates if a session token is still active and returns session info if active.
+     *
+     * @param tokenCheck payload with the bearer token to validate
+     * @return 200 with session info if active, 401 otherwise
+     */
     public ResponseEntity<?> validateSession(@RequestBody TokenCheck tokenCheck){
         boolean isActive = authService.isSessionActive(tokenCheck.getToken());
         if(isActive){

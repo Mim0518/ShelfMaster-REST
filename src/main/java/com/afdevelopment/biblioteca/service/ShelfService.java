@@ -49,29 +49,25 @@ public class ShelfService {
     public Shelf findById(Integer id){
         logger.info("Buscando estante con Id: ".concat(id.toString()));
         Shelf foundShelf = shelfRepository.findShelfById(id);
-        if (foundShelf == null){
+        CommonServiceUtils.ensureFound(foundShelf, () -> {
             logger.error("Estante no encontrado");
-            throw new ShelfNotFoundException("No se encontró el estante con Id ".concat(id.toString()));
-        }
+            return new ShelfNotFoundException("No se encontró el estante con Id ".concat(id.toString()));
+        });
         logger.info("Se encontró el estante ".concat(foundShelf.getLocation()));
         return foundShelf;
     }
     @Transactional
     public String deleteShelfById(GetShelf getShelf){
         logger.info("Eliminando el estante con Id ".concat(getShelf.getId().toString()));
-        if(getShelf.getId().toString().isEmpty()){
-            throw new InvalidParametersException("El parametro id no puede estar vacío");
-        }
+        CommonServiceUtils.requireNotBlank(getShelf.getId().toString(), "id");
+        CommonServiceUtils.requireNonNull(getShelf.getId().toString(), "id");
+
         Shelf isInDB = shelfRepository.findShelfById(getShelf.getId());
-        if(isInDB == null){
-            logger.info("Algo ocurrió, el estante con ID ".concat(getShelf.getId().toString())
-                    .concat(" no se encuentra en la base de datos"));
-            throw new BookNotFoundException("Algo ocurrió, el estante con ID ".concat(getShelf.getId().toString())
-                    .concat(" no se encuentra en la base de datos"));
-        }else{
-            shelfRepository.deleteShelfById(getShelf.getId());
-            return "Estante con Id "+getShelf.getId()+" eliminado con éxito";
-        }
+        CommonServiceUtils.ensureFound(isInDB, () -> new BookNotFoundException(
+                "Algo ocurrió, el estante con ID ".concat(getShelf.getId().toString())
+                        .concat(" no se encuentra en la base de datos")));
+        shelfRepository.deleteShelfById(getShelf.getId());
+        return "Estante con Id "+getShelf.getId()+" eliminado con éxito";
     }
     public Shelf patchShelf(ShelfDto shelfDto){
         Shelf toPatch;
@@ -80,9 +76,7 @@ public class ShelfService {
         } else {
             throw new ShelfKeyesNotInRequestException("El Id del estante a actualizar no puede ser nulo");
         }
-        if(toPatch == null){
-            throw new ShelfNotFoundException("El estante con Id ".concat(shelfDto.getId().toString()).concat(" no existe"));
-        }
+        CommonServiceUtils.ensureFound(toPatch, () -> new ShelfNotFoundException("El estante con Id ".concat(shelfDto.getId().toString()).concat(" no existe")));
         shelfMapper.updateShelfFromDto(shelfDto, toPatch);
         shelfRepository.save(toPatch);
         return toPatch;

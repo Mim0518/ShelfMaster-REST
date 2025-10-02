@@ -28,10 +28,10 @@ public class BookService {
     public Book findById(Integer id){
         logger.info("Buscando libro con Id: ".concat(id.toString()));
         Book foundBook = bookRepository.findBookById(id);
-        if (foundBook == null){
+        CommonServiceUtils.ensureFound(foundBook, () -> {
             logger.error("Libro con id {} no encontrado", id);
-            throw new BookNotFoundException("No se encontró el libro con Id ".concat(id.toString()));
-        }
+            return new BookNotFoundException("No se encontró el libro con Id ".concat(id.toString()));
+        });
         logger.info("Se encontró el libro ".concat(foundBook.getTitle())
                 .concat(" del autor ").concat(foundBook.getAuthor()));
         return foundBook;
@@ -41,10 +41,10 @@ public class BookService {
             throw new InvalidParametersException("El ISBN enviado no es válido");
         logger.info("Buscando libro con ISBN: ".concat(isbn));
         Book foundBook = bookRepository.findBookByIsbn(isbn);
-        if (foundBook == null){
+        CommonServiceUtils.ensureFound(foundBook, () -> {
             logger.error("Libro con ISBN {} no encontrado", isbn);
-            throw new BookNotFoundException("No se encontró el libro con ISBN ".concat(isbn));
-        }
+            return new BookNotFoundException("No se encontró el libro con ISBN ".concat(isbn));
+        });
         logger.info("Se encontró el libro ".concat(foundBook.getTitle())
                 .concat(" del autor ").concat(foundBook.getAuthor()));
         return foundBook;
@@ -78,30 +78,25 @@ public class BookService {
             throw new InvalidParametersException("El ISBN enviado no es válido");
         logger.info("Eliminando el libro con ISBN ".concat(isbn));
         Book isInDB = bookRepository.findBookByIsbn(isbn);
-        if(isInDB == null){
-            logger.info("Algo ocurrió, el libro con ISBN ".concat(isbn)
-                    .concat(" no pudo ser eliminado"));
-            throw new BookNotFoundException("Algo ocurrió, el libro con ISBN ".concat(isbn)
-                    .concat(" no pudo ser eliminado"));
-        }else{
-            bookRepository.deleteBookByIsbn(isbn);
-            return "Libro con ISBN "+isbn+" eliminado";
-        }
+        CommonServiceUtils.ensureFound(isInDB, () -> new BookNotFoundException(
+                "Algo ocurrió, el libro con ISBN ".concat(isbn)
+                        .concat(" no pudo ser eliminado")));
+        bookRepository.deleteBookByIsbn(isbn);
+        return "Libro con ISBN "+isbn+" eliminado";
     }
     @Transactional
     public String deleteBookById(Integer Id){
         logger.info("Eliminando el libro con ID ".concat(Id.toString()));
         Book isInDB = bookRepository.findBookById(Id);
-        if(isInDB == null){
+        CommonServiceUtils.ensureFound(isInDB, () -> {
             String message = "Algo ocurrió, el libro con ID ".concat(Id.toString())
                     .concat(" no está en la base de datos y no puede ser eliminado");
             logger.info(message);
-            throw new BookNotFoundException(message);
-        }else{
-            bookRepository.deleteBookById(Id);
-            logger.info("Libro eliminado");
-            return "Libro con ID "+Id+" eliminado";
-        }
+            return new BookNotFoundException(message);
+        });
+        bookRepository.deleteBookById(Id);
+        logger.info("Libro eliminado");
+        return "Libro con ID "+Id+" eliminado";
     }
     public Book patchBook(BookDto bookDto){
         if(isbnIsInvalid(bookDto.getIsbn()))
@@ -114,6 +109,7 @@ public class BookService {
         } else {
             throw new BookKeysNotInRequestException("Ambos, ID e ISBN, no pueden ser nulos");
         }
+        CommonServiceUtils.ensureFound(toPatch, () -> new BookNotFoundException("No se encontró el libro a actualizar"));
         bookMapper.updateBookFromDto(bookDto, toPatch);
         bookRepository.save(toPatch);
         return toPatch;
@@ -126,6 +122,8 @@ public class BookService {
 
     private boolean isbnIsInvalid(String isbn){
         final String REGEX_ISBN="^(97([89]))?\\d{9}(\\d|X)$";
+        CommonServiceUtils.requireNonNull(isbn, "isbn");
+        CommonServiceUtils.requireNotBlank(isbn, "isbn");
         if (!isbn.matches(REGEX_ISBN)){
             String message = "El ISBN ingresado no es válido, revise el formato ".concat(isbn);
             logger.info(message);

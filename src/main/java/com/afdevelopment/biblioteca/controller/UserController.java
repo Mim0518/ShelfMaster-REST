@@ -18,6 +18,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
+/**
+ * REST controller for user management endpoints.
+ */
 public class UserController {
     private final String OPCORRECTA = "Operación correcta";
     private final String DETAIL = "detailResponse";
@@ -30,6 +33,12 @@ public class UserController {
     }
 
     @PostMapping("/new")
+    /**
+     * Creates a new user.
+     *
+     * @param user the user to create
+     * @return a response entity with detail metadata and the created user
+     */
     public ResponseEntity<Map<String, Object>> newUser(@RequestBody User user){
         logger.info("Inicia controlador de registro de usuarios");
         User userResponse = userService.saveUser(user);
@@ -43,6 +52,12 @@ public class UserController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @GetMapping("/curp/{curp}")
+    /**
+     * Retrieves a user by CURP.
+     *
+     * @param curp the CURP identifier
+     * @return a response entity with detail metadata and the user
+     */
     public ResponseEntity<Map<String, Object>> getUser(@PathVariable String curp){
         logger.info("Inicia controlador de búsqueda de usuarios por curp");
         User user = userService.findByCURP(curp);
@@ -56,6 +71,12 @@ public class UserController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PostMapping("/delete/curp")
+    /**
+     * Deletes a user by CURP.
+     *
+     * @param getUser payload containing the CURP
+     * @return a response entity with detail metadata and a confirmation message
+     */
     public ResponseEntity<Map<String, Object>> deleteUserByCurp(@RequestBody GetUser getUser){
         logger.info("Inicia controlador de eliminación de usuarios");
         String userResponse = userService.deleteUserByCurp(getUser);
@@ -69,6 +90,12 @@ public class UserController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PatchMapping("/update")
+    /**
+     * Partially updates a user using the provided DTO fields.
+     *
+     * @param userDto the DTO with fields to update
+     * @return a response entity with detail metadata and the updated user
+     */
     public ResponseEntity<Map<String, Object>> patchUser(@RequestBody UserDto userDto){
         logger.info("Inicia controlador de actualización de usuarios");
         User userResponse = userService.patchUser(userDto);

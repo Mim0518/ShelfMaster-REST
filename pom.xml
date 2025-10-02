@@ -10,8 +10,8 @@
     </parent>
     <groupId>com.afdevelopment</groupId>
     <artifactId>Biblioteca</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>0.0.2-RELEASE</version>
+    <packaging>jar</packaging>
     <name>Biblioteca</name>
     <description>Biblioteca</description>
     <properties>

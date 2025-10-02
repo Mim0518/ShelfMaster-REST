@@ -47,10 +47,10 @@ public class UserService {
             throw new InvalidParametersException("La curp ingresada no es válida");
         }
         foundUser = userRepository.findUserByCurp(curp);
-        if (foundUser == null){
+        CommonServiceUtils.ensureFound(foundUser, () -> {
             logger.error("Usuario no encontrado");
-            throw new UserNotFoundException("No se encontró el usuario con CURP ".concat(curp));
-        }
+            return new UserNotFoundException("No se encontró el usuario con CURP ".concat(curp));
+        });
         logger.info("Se encontró el usuario ".concat(foundUser.getNombre())
                 .concat("con CURP ").concat(foundUser.getCurp()));
         return foundUser;
@@ -58,19 +58,14 @@ public class UserService {
     @Transactional
     public String deleteUserByCurp(GetUser getUser){
         logger.info("Eliminando el usuario con CURP ".concat(getUser.getCurp()));
-        if(getUser.getCurp().isEmpty()){
-            throw new InvalidParametersException("El parametro curp no puede estar vacío");
-        }
+        CommonServiceUtils.requireNotBlank(getUser.getCurp(), "curp");
+        CommonServiceUtils.requireNonNull(getUser.getCurp(), "curp");
         User isInDB = userRepository.findUserByCurp(getUser.getCurp());
-        if(isInDB == null){
-            logger.info("Algo ocurrió, el usuario con CURP ".concat(getUser.getCurp())
-                    .concat(" no se encuentra en la base de datos"));
-            throw new BookNotFoundException("Algo ocurrió, el usuario con CURP ".concat(getUser.getCurp())
-                    .concat(" no se encuentra en la base de datos"));
-        }else{
-            userRepository.deleteUserByCurp(getUser.getCurp());
-            return "Usuario con curp "+getUser.getCurp()+" eliminado con éxito";
-        }
+        CommonServiceUtils.ensureFound(isInDB, () -> new BookNotFoundException(
+                "Algo ocurrió, el usuario con CURP ".concat(getUser.getCurp())
+                        .concat(" no se encuentra en la base de datos")));
+        userRepository.deleteUserByCurp(getUser.getCurp());
+        return "Usuario con curp "+getUser.getCurp()+" eliminado con éxito";
     }
     public User patchUser(UserDto userDto){
         User toPatch;
@@ -82,9 +77,7 @@ public class UserService {
         } else {
             throw new UserKeysNotInRequestException("El Id del usuario a actualizar no puede ser nulo");
         }
-        if(toPatch == null){
-            throw new UserNotFoundException("El usuario con CURP ".concat(userDto.getCurp()).concat(" no existe"));
-        }
+        CommonServiceUtils.ensureFound(toPatch, () -> new UserNotFoundException("El usuario con CURP ".concat(userDto.getCurp()).concat(" no existe")));
         userMapper.updateUserFromDto(userDto, toPatch);
         userRepository.save(toPatch);
         return toPatch;

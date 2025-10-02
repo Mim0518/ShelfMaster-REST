@@ -17,6 +17,9 @@ import java.util.Map;
 
 @RequestMapping("/shelf")
 @RestController
+/**
+ * REST controller for shelf management endpoints.
+ */
 public class ShelfController {
     private final String OPCORRECTA = "Operación correcta";
     private final String DETAIL = "detailResponse";
@@ -29,6 +32,12 @@ public class ShelfController {
     }
 
     @PostMapping("/new")
+    /**
+     * Creates a new shelf.
+     *
+     * @param shelf the shelf to create
+     * @return a response entity with detail metadata and the created shelf
+     */
     public ResponseEntity<Map<String, Object>> newUser(@RequestBody Shelf shelf){
         logger.info("Inicia controlador de registro de estantes");
         Shelf shelfResponse = shelfService.saveShelf(shelf);
@@ -42,6 +51,12 @@ public class ShelfController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @GetMapping("/id/{Id}")
+    /**
+     * Retrieves a shelf by its identifier.
+     *
+     * @param Id the shelf identifier
+     * @return a response entity with detail metadata and the shelf
+     */
     public ResponseEntity<Map<String, Object>> getShelf(@PathVariable Integer Id){
         logger.info("Inicia controlador de búsqueda de estante por id");
         Shelf shelf = shelfService.findById(Id);
@@ -55,6 +70,12 @@ public class ShelfController {
         return (new ResponseEntity<>(jsonResponse, new HttpHeaders(), HttpStatus.OK));
     }
     @PostMapping("/delete")
+    /**
+     * Deletes a shelf by its identifier.
+     *
+     * @param getShelf payload containing the shelf id
+     * @return a response entity with detail metadata and a confirmation message
+     */
     public ResponseEntity<Map<String, Object>> deleteShelfById(@RequestBody GetShelf getShelf){
         logger.info("Inicia controlador de eliminación de estantes");
         String shelfResponse = shelfService.deleteShelfById(getShelf);

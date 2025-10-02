@@ -1,6 +1,9 @@
 package com.afdevelopment.biblioteca.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class TokenCheck {
+    @NotBlank(message = "Token is required")
     private String token;
 
     public String getToken() {
@@ -14,7 +17,7 @@ public class TokenCheck {
     @Override
     public String toString() {
         return "TokenCheck{" +
-                "token='" + token + '\'' +
+                "token='***'" +
                 '}';
     }
 }

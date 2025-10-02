@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,11 +46,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        // Do not require CSRF when hitting auth endpoints
                         .ignoringRequestMatchers("/auth/**")
-                        .ignoringRequestMatchers(String.valueOf(HttpMethod.GET))
-                        .ignoringRequestMatchers(String.valueOf(HttpMethod.HEAD))
-                        .ignoringRequestMatchers(String.valueOf(HttpMethod.OPTIONS))
-                        .ignoringRequestMatchers(String.valueOf(HttpMethod.TRACE)))
+                        // Skip CSRF checks for JWT-based API calls (Authorization: Bearer ...)
+                        .ignoringRequestMatchers(request -> {
+                            String auth = request.getHeader("Authorization");
+                            if (auth == null) return false;
+                            String value = auth.trim();
+                            return value.regionMatches(true, 0, "Bearer ", 0, 7);
+                        })
+                        // Also skip CSRF for CORS preflight requests
+                        .ignoringRequestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod()))
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
@@ -60,7 +66,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new CsrfCookieFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -69,7 +76,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:4200");
-        configuration.addAllowedOrigin("http://129.222.64.13");
+        configuration.addAllowedOrigin("http://129.222.64.13:1611");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

@@ -71,10 +71,7 @@ public class AuthService {
             );
             authResponse.setUser(request.getUsername());
             logger.info("Generando token JWT para usuario: {}", request.getUsername());
-            String token = JWT.create()
-                    .withSubject(request.getUsername())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration)) // Using configured expiration time
-                    .sign(Algorithm.HMAC256(jwtSecret));
+            String token = generateJwt(request.getUsername());
             authResponse.setToken(token);
 
             // Create a refresh token
@@ -100,11 +97,7 @@ public class AuthService {
                     .map(RefreshToken::getLibrarian)
                     .map(librarian -> {
                         logger.info("Generando nuevo JWT token para usuario: {}", librarian.getUsername());
-                        String token = JWT.create()
-                                .withSubject(librarian.getUsername())
-                                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
-                                .sign(Algorithm.HMAC256(jwtSecret));
-                        
+                        String token = generateJwt(librarian.getUsername());
                         logger.info("Refresh token procesado exitosamente para usuario: {}", librarian.getUsername());
                         return new TokenRefreshResponse(token, requestRefreshToken, librarian.getUsername());
                     })
@@ -134,6 +127,13 @@ public class AuthService {
         boolean hasDigit = password.chars().anyMatch(Character::isDigit);
         boolean hasSpecial = password.chars().anyMatch(c -> "!@#$%^&*()_+-=[]{};:'\"|,.<>/?".indexOf(c) >= 0);
         return hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
+    private String generateJwt(String subject) {
+        return JWT.create()
+                .withSubject(subject)
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpiration))
+                .sign(Algorithm.HMAC256(jwtSecret));
     }
 
     public Librarian register(RegisterRequest request) {

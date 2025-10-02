@@ -10,10 +10,10 @@ This document contains a comprehensive list of improvement tasks for the Library
 - [x] 4. Implement proper error handling for invalid JWT tokens
 - [x] 5. Review and adjust token expiration time (currently 10 days, which is too long)
 - [x] 6. Implement rate limiting for authentication endpoints to prevent brute force attacks
-- [ ] 7. Add CSRF protection for non-GET endpoints
-- [ ] 8. Implement password complexity requirements for user registration
-- [ ] 9. Add input validation for all user-provided data in controllers
-- [ ] 10. Secure sensitive data in logs (e.g., personal information)
+- [x] 7. Add CSRF protection for non-GET endpoints
+- [x] 8. Implement password complexity requirements for user registration
+- [x] 9. Add input validation for all user-provided data in controllers
+- [x] 10. Secure sensitive data in logs (e.g., personal information)
 
 ## Architecture Improvements
 
@@ -33,8 +33,8 @@ This document contains a comprehensive list of improvement tasks for the Library
 - [ ] 1. Add Lombok to reduce boilerplate code in model classes
 - [ ] 2. Standardize naming conventions (currently mix of Spanish and English)
 - [ ] 3. Implement internationalization (i18n) for error messages
-- [ ] 4. Add comprehensive JavaDoc documentation to all public methods
-- [ ] 5. Remove code duplication in service classes
+- [x] 4. Add comprehensive JavaDoc documentation to all public methods
+- [x] 5. Remove code duplication in service classes
 - [ ] 6. Implement consistent logging strategy across all classes
 - [ ] 7. Add equals() and hashCode() methods to entity classes
 - [ ] 8. Use constructor injection consistently across all classes
